@@ -1,3 +1,9 @@
+# Keep the downloaded MIMIC-IV source tables local.
+data/*
+
+# Track project-derived resources.
+!data/derived/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
@@ -9,7 +15,6 @@ __pycache__/
 # Distribution / packaging
 .Python
 build/
-data/
 develop-eggs/
 dist/
 downloads/
