@@ -73,19 +73,21 @@ data/
 └── icu/
 ```
 
-Only three source tables are required to recreate the canonical extract:
+Four source tables are required to recreate the canonical extract:
 
 ```text
 data/icu/chartevents.csv.gz
 data/icu/icustays.csv.gz
 data/icu/d_items.csv.gz
+data/hosp/admissions.csv.gz
 ```
 
 Their roles are:
 
 - `chartevents`: individual ICU observations and their charted values;
-- `icustays`: ICU stay identifiers and ICU admission times (`intime`);
-- `d_items`: MIMIC's dictionary for local `itemid` codes.
+- `icustays`: ICU stay identifiers, ICU admission times (`intime`), and first care-unit types (`first_careunit`);
+- `d_items`: MIMIC's dictionary for local `itemid` codes;
+- `admissions`: hospital-admission identifiers and source admission types (`admission_type`).
 
 The repository's `.gitignore` keeps downloaded source data local while allowing derived project resources under `data/derived/` to be tracked.
 
@@ -103,13 +105,13 @@ Run the notebook from within the repository after placing the MIMIC-IV Demo file
 
 The notebook:
 
-1. loads the relevant columns from `chartevents`, `icustays`, and `d_items`;
+1. loads the relevant columns from `chartevents`, `icustays`, `d_items`, and `admissions`;
 2. inspects the source definitions of the three target measurements;
-3. joins ICU admission time to charted observations;
+3. joins ICU admission time and first care-unit type to charted observations;
 4. compares candidate extraction windows;
 5. applies the four-hour extraction rule;
-6. joins the human-readable MIMIC measurement label;
-7. validates coverage, missingness, duplicates, warning flags, and observed ranges;
+6. joins the human-readable MIMIC measurement label and hospital-admission type;
+7. validates coverage, missingness, duplicates, warning flags, observed ranges, and categorical context at its entity level;
 8. runs reproducibility assertions;
 9. writes `data/derived/mimic_icu_vitals_4h.csv`.
 
@@ -127,13 +129,15 @@ MIMIC dates are shifted for deidentification. A timestamp such as `2180-07-23 14
 
 ## Canonical CSV schema
 
-The derived CSV contains nine fields:
+The derived CSV contains eleven fields, in this order:
 
 | Field | Meaning |
 |---|---|
 | `subject_id` | MIMIC-local patient identifier |
 | `hadm_id` | MIMIC-local hospital-admission identifier |
+| `admission_type` | Source admission classification from `admissions`; a hospital-admission property |
 | `stay_id` | MIMIC-local ICU-stay identifier |
+| `first_careunit` | First care-unit type from `icustays`; an ICU-stay property, not the location of each observation |
 | `charttime` | Deidentified charted observation timestamp |
 | `itemid` | MIMIC-local identifier for the measurement type |
 | `measurement_label` | Human-readable source label joined from `d_items` |
@@ -142,6 +146,16 @@ The derived CSV contains nine fields:
 | `warning` | Source warning flag associated with the observation |
 
 The source `itemid` and source unit strings are deliberately retained. Semantic FAIRification should **add mappings**, not erase source terminology.
+
+### Approved categorical enrichment
+
+Following TA feedback, the canonical schema retains all nine original fields and adds `admission_type` and `first_careunit`. These provide recurring descriptive concepts at two entity levels while preserving the patient/admission/stay hierarchy. The observation cohort and four-hour selection rule are unchanged.
+
+`first_careunit` travels through the existing join on `subject_id`, `hadm_id`, and `stay_id`. `admission_type` is added through a left, many-to-one join on `subject_id` and `hadm_id`. Source category strings are retained verbatim. The notebook rejects missing categories or unexpected row multiplication and displays category counts using distinct admissions/stays, not observation frequencies.
+
+The CSV is denormalized: later RDF should attach `admission_type` to the hospital admission and `first_careunit` to the ICU stay. The first care unit does not establish the location of every observation. External terminology mappings remain a separate modelling decision.
+
+`admission_location` is deferred to keep mapping scope bounded; `last_careunit` is not included. The `warning` field and all three patient/admission/stay identifiers remain part of the canonical schema.
 
 ## Validation status
 
@@ -154,6 +168,10 @@ The current canonical extract has passed the reproducibility checks in the noteb
 - expected per-measurement counts;
 - no missing `valuenum` values;
 - no missing `valueuom` values;
+- no missing `admission_type` or `first_careunit` values;
+- 6 admission types across 121 admissions and 9 first care-unit types across 133 stays;
+- one admission type per admission and one first care-unit type per ICU stay;
+- many-to-one joins preserve observation counts and the admission join preserves existing values;
 - no exact duplicates under patient, ICU stay, chart time, measurement type, and value;
 - all 133 represented stays contain all three target measurement types.
 
@@ -227,7 +245,9 @@ The provisional semantic types needed to describe the resource are:
 
 - Patient / subject
 - Hospital admission
+- Admission type
 - ICU stay / encounter
+- First care-unit type
 - Clinical observation
 - Observable or measurement type
 - Numeric value / quantity
@@ -246,6 +266,8 @@ Provisional competency questions include:
 - When was an observation charted?
 - Can all heart-rate observations be retrieved without knowing the MIMIC `itemid`?
 - Which observations carry a warning flag?
+- Which observations belong to stays whose first care unit is Medical Intensive Care Unit (MICU)?
+- Which observations are associated with each hospital-admission type?
 
 These questions should guide the semantic model and later SPARQL validation.
 
@@ -342,3 +364,4 @@ When extending this repository:
 - update documentation when project decisions become fixed.
 
 See [`AGENTS.md`](AGENTS.md) for detailed instructions intended for Codex and other coding agents working on the repository.
+

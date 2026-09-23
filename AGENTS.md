@@ -52,12 +52,13 @@ data/icu/
 
 They are intentionally ignored by Git.
 
-Only three source tables are needed to recreate the canonical extract:
+Four source tables are needed to recreate the canonical extract:
 
 ```text
 data/icu/chartevents.csv.gz
 data/icu/icustays.csv.gz
 data/icu/d_items.csv.gz
+data/hosp/admissions.csv.gz
 ```
 
 Do not add the full source release to version control unless the repository owners explicitly change that policy.
@@ -134,12 +135,14 @@ Do not replace this with random row sampling unless the project owners explicitl
 
 ## Canonical CSV schema
 
-The output has exactly these nine fields at the current stage:
+The output has exactly these eleven fields at the current stage:
 
 ```text
 subject_id
 hadm_id
+admission_type
 stay_id
+first_careunit
 charttime
 itemid
 measurement_label
@@ -152,7 +155,9 @@ Meaning:
 
 - `subject_id`: MIMIC-local patient identifier.
 - `hadm_id`: MIMIC-local hospital-admission identifier.
+- `admission_type`: source hospital-admission classification, joined from `admissions`.
 - `stay_id`: MIMIC-local ICU-stay identifier.
+- `first_careunit`: first care-unit type of the ICU stay, carried from `icustays`; not the location of each observation.
 - `charttime`: deidentified charted time associated with the observation.
 - `itemid`: MIMIC-local measurement identifier.
 - `measurement_label`: label joined from `d_items`.
@@ -161,6 +166,16 @@ Meaning:
 - `warning`: source warning flag.
 
 Do not drop `itemid` after introducing standard terminology mappings. The local source identifier must remain available for provenance and traceability.
+
+### Approved categorical enrichment
+
+Following TA feedback, the canonical schema retains all nine original fields and adds `admission_type` and `first_careunit`. These provide recurring descriptive concepts at two entity levels while preserving the patient/admission/stay hierarchy. The observation cohort and four-hour selection rule are unchanged.
+
+`first_careunit` travels through the existing join on `subject_id`, `hadm_id`, and `stay_id`. `admission_type` is added through a left, many-to-one join on `subject_id` and `hadm_id`. Source category strings are retained verbatim. The notebook rejects missing categories or unexpected row multiplication and displays category counts using distinct admissions/stays, not observation frequencies.
+
+The CSV is denormalized: later RDF should attach `admission_type` to the hospital admission and `first_careunit` to the ICU stay. The first care unit does not establish the location of every observation. External terminology mappings remain a separate modelling decision.
+
+`admission_location` is deferred to keep mapping scope bounded; `last_careunit` is not included. The `warning` field and all three patient/admission/stay identifiers remain part of the canonical schema.
 
 ## Important temporal semantics
 
@@ -185,6 +200,10 @@ The notebook currently verifies:
 - expected per-`itemid` counts;
 - no missing `valuenum`;
 - no missing `valueuom`;
+- no missing `admission_type` or `first_careunit`;
+- 6 admission types and 9 first care-unit types;
+- one admission type per admission and one first care-unit type per ICU stay;
+- many-to-one joins preserve observation counts and the admission join preserves existing values;
 - no exact duplicates under patient, ICU stay, chart time, measurement type, and value;
 - all 133 represented stays contain all three measurement types.
 
@@ -278,7 +297,7 @@ Current status:
 
 Keep implementation scope small and inspectable.
 
-The course guidance favors approximately 6–10 properties and at most a few thousand records. The project was deliberately bounded to fit that scale.
+The course guidance favors approximately 6–10 properties and at most a few thousand records. The project was deliberately bounded near that scale. The approved revision uses eleven CSV columns to retain identifiers and warning provenance while adding two recurring categorical concepts; do not drop fields solely to force a ten-column limit.
 
 Do not expand the project into the full MIMIC schema or create a broad healthcare ontology.
 
@@ -302,7 +321,9 @@ Provisional semantic types:
 
 - Patient / subject
 - Hospital admission
+- Admission type
 - ICU stay / encounter
+- First care-unit type
 - Clinical observation
 - Observable / measurement type
 - Numeric quantity / value
@@ -325,6 +346,8 @@ Use competency questions to drive the semantic model. Current candidates are:
 5. When was the observation charted?
 6. Can all heart-rate observations be retrieved without knowing the MIMIC `itemid`?
 7. Which observations have a warning flag?
+8. Which observations belong to stays whose first care unit is Medical Intensive Care Unit (MICU)?
+9. Which observations are associated with each hospital-admission type?
 
 When adding RDF or ontology mappings, verify that the resulting graph can answer these questions cleanly.
 
@@ -599,3 +622,4 @@ Before making non-trivial changes, an agent should:
 6. state uncertainties instead of silently inventing ontology mappings or clinical interpretations.
 
 If repository reality and this document disagree, repository outputs and explicit recent project decisions take precedence, but update this file afterward so the discrepancy does not persist.
+
