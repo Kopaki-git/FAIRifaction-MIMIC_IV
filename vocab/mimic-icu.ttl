@@ -1,0 +1,11 @@
+@prefix project: <https://w3id.org/FAIR-course-UT/2026-2027/group4/ont#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<https://w3id.org/FAIR-course-UT/2026-2027/group4/ont>
+    a owl:Ontology .
+
+project:hasFirstCareUnitType
+    a owl:ObjectProperty ;
+    rdfs:label "has first care unit type"@en ;
+    rdfs:comment "Relates an ICU stay to the reusable care-unit-type concept corresponding to the source first_careunit value for that stay."@en .
