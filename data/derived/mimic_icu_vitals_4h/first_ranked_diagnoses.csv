@@ -1,0 +1,122 @@
+subject_id,hadm_id,seq_num,icd_code,icd_version,long_title
+10000032,29079034,1,45829,9,Other iatrogenic hypotension
+10001217,24597018,1,3240,9,Intracranial abscess
+10001217,27703517,1,3240,9,Intracranial abscess
+10001725,25563031,1,78829,9,Other specified retention of urine
+10002428,20321825,1,51881,9,Acute respiratory failure
+10002428,23473524,1,03843,9,Septicemia due to pseudomonas
+10002428,28662225,1,0383,9,Septicemia due to anaerobes
+10002495,24982426,1,I214,10,Non-ST elevation (NSTEMI) myocardial infarction
+10002930,25696644,1,2511,9,Other specified hypoglycemia
+10002930,25922998,1,F10239,10,"Alcohol dependence with withdrawal, unspecified"
+10003046,26048429,1,1505,9,Malignant neoplasm of lower third of esophagus
+10003400,20214994,1,1543,9,"Malignant neoplasm of anus, unspecified site"
+10003400,23559586,1,T8131XA,10,"Disruption of external operation (surgical) wound, not elsewhere classified, initial encounter"
+10004235,24181354,1,03842,9,Septicemia due to escherichia coli [E. coli]
+10004720,22081550,1,J690,10,Pneumonitis due to inhalation of food and vomit
+10004733,27411876,1,34839,9,Other encephalopathy
+10005817,28661809,1,J9621,10,Acute and chronic respiratory failure with hypoxia
+10005866,20364112,1,K265,10,Chronic or unspecified duodenal ulcer with perforation
+10005909,20199380,1,I82422,10,Acute embolism and thrombosis of left iliac vein
+10006053,22942076,1,5722,9,Hepatic encephalopathy
+10006580,24159665,1,2397,9,Neoplasm of unspecified nature of endocrine glands and other parts of nervous system
+10007058,22954658,1,I214,10,Non-ST elevation (NSTEMI) myocardial infarction
+10007795,28477357,1,5772,9,Cyst and pseudocyst of pancreas
+10007818,22987108,1,K7469,10,Other cirrhosis of liver
+10007928,20338077,1,53140,9,"Chronic or unspecified gastric ulcer with hemorrhage, without mention of obstruction"
+10008287,22168393,1,D1802,10,Hemangioma of intracranial structures
+10008454,20291550,1,82111,9,Open fracture of shaft of femur
+10009035,28324362,1,4240,9,Mitral valve disorders
+10009049,22995465,1,0388,9,Other specified septicemias
+10009628,25926192,1,41401,9,Coronary atherosclerosis of native coronary artery
+10010471,29842315,1,I214,10,Non-ST elevation (NSTEMI) myocardial infarction
+10010867,22429197,1,S12600A,10,"Unspecified displaced fracture of seventh cervical vertebra, initial encounter for closed fracture"
+10011398,27505812,1,41401,9,Coronary atherosclerosis of native coronary artery
+10012552,27089790,1,41071,9,"Subendocardial infarction, initial episode of care"
+10012853,27882036,1,I82622,10,Acute embolism and thrombosis of deep veins of left upper extremity
+10013049,22675517,1,2127,9,Benign neoplasm of heart
+10014078,25809882,1,3453,9,Grand mal status
+10014354,22741225,1,I69354,10,Hemiplegia and hemiparesis following cerebral infarction affecting left non-dominant side
+10014354,27487226,1,J189,10,"Pneumonia, unspecified organism"
+10014354,29600294,1,J208,10,Acute bronchitis due to other specified organisms
+10015272,27993466,1,I2699,10,Other pulmonary embolism without acute cor pulmonale
+10015860,24698912,1,A419,10,"Sepsis, unspecified organism"
+10015860,25085565,1,0380,9,Streptococcal septicemia
+10015931,22130791,1,K921,10,Melena
+10015931,24420677,1,I5023,10,Acute on chronic systolic (congestive) heart failure
+10015931,28157142,1,I350,10,Nonrheumatic aortic (valve) stenosis
+10016150,29374560,1,41402,9,Coronary atherosclerosis of autologous vein bypass graft
+10016742,27568122,1,J9621,10,Acute and chronic respiratory failure with hypoxia
+10016742,28506150,1,R4182,10,"Altered mental status, unspecified"
+10016742,29281842,1,J95851,10,Ventilator associated pneumonia
+10016810,20973395,1,5400,9,Acute appendicitis with generalized peritonitis
+10017492,27417763,1,82021,9,Closed fracture of intertrochanteric section of neck of femur
+10018081,21027282,1,0389,9,Unspecified septicemia
+10018081,28861356,1,V552,9,Attention to ileostomy
+10018328,23786647,1,I671,10,"Cerebral aneurysm, nonruptured"
+10018501,28479513,1,85221,9,"Subdural hemorrhage following injury without mention of open intracranial wound, with no loss of consciousness"
+10018845,21101111,1,85220,9,"Subdural hemorrhage following injury without mention of open intracranial wound, unspecified state of consciousness"
+10019003,21457723,1,D61818,10,Other pancytopenia
+10019003,27525946,1,K264,10,Chronic or unspecified duodenal ulcer with hemorrhage
+10019003,29279905,1,A419,10,"Sepsis, unspecified organism"
+10019172,24997044,1,4241,9,Aortic valve disorders
+10019385,20297618,1,I25110,10,Atherosclerotic heart disease of native coronary artery with unstable angina pectoris
+10019568,28710730,1,80707,9,Closed fracture of seven ribs
+10019777,27738145,1,1571,9,Malignant neoplasm of body of pancreas
+10019917,22585261,1,53240,9,"Chronic or unspecified duodenal ulcer with hemorrhage, without mention of obstruction"
+10020187,24104168,1,I6032,10,Nontraumatic subarachnoid hemorrhage from left posterior communicating artery
+10020187,26842957,1,I671,10,"Cerebral aneurysm, nonruptured"
+10020306,23052851,1,E43,10,Unspecified severe protein-calorie malnutrition
+10020640,27984218,1,486,9,"Pneumonia, organism unspecified"
+10020740,23831430,1,03842,9,Septicemia due to escherichia coli [E. coli]
+10020740,25826145,1,5770,9,Acute pancreatitis
+10020786,23488445,1,A419,10,"Sepsis, unspecified organism"
+10020944,29974575,1,03849,9,Other septicemia due to gram-negative organisms
+10021118,24490144,1,I2510,10,Atherosclerotic heart disease of native coronary artery without angina pectoris
+10021312,28829452,1,J9601,10,Acute respiratory failure with hypoxia
+10021487,27660781,1,5720,9,Abscess of liver
+10021487,28998349,1,86803,9,"Injury to other intra-abdominal organs without mention of open wound into cavity, peritoneum"
+10021666,22756440,1,85201,9,"Subarachnoid hemorrhage following injury without mention of open intracranial wound, with no loss of consciousness"
+10021938,23112364,1,34839,9,Other encephalopathy
+10021938,27154822,1,2767,9,Hyperpotassemia
+10022017,22342963,1,I2510,10,Atherosclerotic heart disease of native coronary artery without angina pectoris
+10022041,28909879,1,29181,9,Alcohol withdrawal
+10022281,29642388,1,44102,9,"Dissection of aorta, abdominal"
+10022880,27708593,1,72403,9,"Spinal stenosis, lumbar region, with neurogenic claudication"
+10023117,21133938,1,R570,10,Cardiogenic shock
+10023117,21607814,1,I5023,10,Acute on chronic systolic (congestive) heart failure
+10023117,28872262,1,42823,9,Acute on chronic systolic heart failure
+10023239,21759936,1,T85694A,10,"Other mechanical complication of insulin pump, initial encounter"
+10023239,29295881,1,99657,9,Mechanical complication due to insulin pump
+10023771,20044587,1,41401,9,Coronary atherosclerosis of native coronary artery
+10024043,24717014,1,33520,9,Amyotrophic lateral sclerosis
+10025463,24470193,1,431,9,Intracerebral hemorrhage
+10025612,23403708,1,1622,9,Malignant neoplasm of main bronchus
+10026255,22059910,1,1629,9,"Malignant neoplasm of bronchus and lung, unspecified"
+10026354,24547356,1,S0262XA,10,"Fracture of subcondylar process of mandible, initial encounter for closed fracture"
+10026406,25260176,1,29181,9,Alcohol withdrawal
+10027445,26275841,1,51881,9,Acute respiratory failure
+10027445,29163082,1,4240,9,Mitral valve disorders
+10027602,21477991,1,4373,9,"Cerebral aneurysm, nonruptured"
+10027602,28166872,1,430,9,Subarachnoid hemorrhage
+10029291,22205327,1,I2602,10,Saddle embolus of pulmonary artery with acute cor pulmonale
+10029484,20764029,1,0088,9,"Intestinal infection due to other organism, not elsewhere classified"
+10031404,21606243,1,I308,10,Other forms of acute pericarditis
+10031757,28477280,1,1551,9,Malignant neoplasm of intrahepatic bile ducts
+10032725,20611640,1,1983,9,Secondary malignant neoplasm of brain and spinal cord
+10035185,22580999,1,41401,9,Coronary atherosclerosis of native coronary artery
+10035631,29276678,1,J9601,10,Acute respiratory failure with hypoxia
+10036156,28019404,1,53140,9,"Chronic or unspecified gastric ulcer with hemorrhage, without mention of obstruction"
+10037928,22490490,1,25022,9,"Diabetes with hyperosmolarity, type II or unspecified type, uncontrolled"
+10037928,24656677,1,25012,9,"Diabetes with ketoacidosis, type II or unspecified type, uncontrolled"
+10037975,27617929,1,03849,9,Other septicemia due to gram-negative organisms
+10038081,20755971,1,56723,9,Spontaneous bacterial peritonitis
+10038933,25129047,1,85186,9,"Other and unspecified cerebral laceration and contusion, without mention of open intracranial wound, with loss of consciousness of unspecified duration"
+10038992,24745425,1,I082,10,Rheumatic disorders of both aortic and tricuspid valves
+10038999,27189241,1,J189,10,"Pneumonia, unspecified organism"
+10039708,23819016,1,A4189,10,Other specified sepsis
+10039708,24928679,1,K7031,10,Alcoholic cirrhosis of liver with ascites
+10039708,28258130,1,D649,10,"Anemia, unspecified"
+10039831,26924951,1,1962,9,Secondary and unspecified malignant neoplasm of intra-abdominal lymph nodes
+10039997,24294180,1,4373,9,"Cerebral aneurysm, nonruptured"
+10040025,27996267,1,T814XXA,10,"Infection following a procedure, initial encounter"
