@@ -101,6 +101,10 @@ FHIR R4 provides the structural clinical model. Shared terminologies are used wh
 
 This is the canonical inspection DAG. Repeated resource names denote the same referenced resource redrawn locally so the graph remains acyclic and readable. It shows semantic FHIR structure, not low-level FHIR-RDF serialization wrappers such as `fhir:v`.
 
+**RDF reading convention.** Every directed edge is intended as a subject–predicate–object relation in the RDF graph. Resource-property and datatype-property labels correspond to FHIR R4 RDF predicates; some nested labels such as `coding`, `system`, and `code` are shortened display forms whose full FHIR predicate names are omitted only for readability. For example, `Observation -- fhir:Observation.code --> CodeableConcept` is a literal semantic reading of the corresponding branch. The DAG deliberately suppresses lower-level FHIR-RDF serialization machinery such as primitive-value wrappers, reference/link machinery, and ordering/index details where those do not affect semantic inspection. It is therefore a semantic RDF graph specification, not literal Turtle syntax.
+
+FHIR R4 RDF representation: https://hl7.org/fhir/R4/rdf.html
+
 ```text
 Observation
 │
@@ -464,6 +468,139 @@ Observation
 ```
 
 ---
+
+### 4.1 Backbone projection
+
+The canonical DAG above is the authoritative model. The following backbone is a **derived, property-preserving projection** for quick orientation; it does not define a second model.
+
+Derivation rule:
+
+> Preserve the resource-level properties shown in the canonical model so that absence in this view is not confused with absence from the model. Compress datatype, terminology, identifier, extension, and mapping internals unless their internal structure is itself necessary to understand the model topology.
+
+Resource labels such as `Observation`, `Encounter`, `Condition`, and `Location` imply their FHIR resource type, so separate `rdf:type` branches are omitted here.
+
+**RDF reading convention for the backbone.** Edges retain the same RDF predicate semantics as the canonical DAG. Predicate labels such as `status`, `code`, `encounter`, and `partOf` are shortened display forms of the corresponding FHIR RDF predicates. Bracketed expressions summarize collapsed RDF subgraphs; they are not new predicates or replacement concepts.
+
+```text
+Observation
+│
+├── status ──────────────────────────────▶ final
+│
+├── category ────────────────────────────▶ vital-signs
+│
+├── code ────────────────────────────────▶ [MIMIC item coding + LOINC]
+│
+├── subject ─────────────────────────────▶ Patient
+│                                          │
+│                                          └── identifier
+│                                              ─────────▶ subject_id
+│
+├── effectiveDateTime ───────────────────▶ charttime
+│
+├── valueQuantity ───────────────────────▶ Quantity
+│                                          │
+│                                          ├── value ──▶ valuenum
+│                                          └── unit ───▶ [source valueuom + UCUM]
+│
+├── extension ───────────────────────────▶ [warning flag]
+│
+└── encounter ───────────────────────────▶ ICU Encounter
+                                           │
+                                           ├── identifier
+                                           │   ─────────▶ stay_id
+                                           │
+                                           ├── status
+                                           │   ─────────▶ finished
+                                           │
+                                           ├── class
+                                           │   ─────────▶ ACUTE
+                                           │
+                                           ├── subject
+                                           │   ─────────▶ Patient
+                                           │
+                                           ├── period
+                                           │   ─────────▶ ICU interval
+                                           │              [intime → outtime]
+                                           │
+                                           ├── partOf
+                                           │   ─────────▶ Hospital Encounter
+                                           │              │
+                                           │              ├── identifier
+                                           │              │   ─────────▶ hadm_id
+                                           │              │
+                                           │              ├── status
+                                           │              │   ─────────▶ finished
+                                           │              │
+                                           │              ├── class
+                                           │              │   ─────────▶ IMP
+                                           │              │
+                                           │              ├── priority
+                                           │              │   ─────────▶ [EL / UR / EM
+                                           │              │               where mapped]
+                                           │              │
+                                           │              ├── extension
+                                           │              │   ─────────▶ [verbatim
+                                           │              │               admission_type]
+                                           │              │
+                                           │              ├── subject
+                                           │              │   ─────────▶ Patient
+                                           │              │
+                                           │              ├── period
+                                           │              │   ─────────▶ hospital interval
+                                           │              │              [admittime → dischtime]
+                                           │              │
+                                           │              └── diagnosis
+                                           │                  ─────────▶ EncounterDiagnosis
+                                           │                              │
+                                           │                              ├── rank
+                                           │                              │   ─────▶ 1
+                                           │                              │
+                                           │                              ├── use
+                                           │                              │   ─────▶ billing
+                                           │                              │
+                                           │                              └── condition
+                                           │                                  ─────▶ Condition
+                                           │                                          │
+                                           │                                          ├── subject
+                                           │                                          │   ─────▶ Patient
+                                           │                                          │
+                                           │                                          ├── encounter
+                                           │                                          │   ─────▶ Hospital Encounter
+                                           │                                          │
+                                           │                                          ├── category
+                                           │                                          │   ─────▶ encounter-diagnosis
+                                           │                                          │
+                                           │                                          └── code
+                                           │                                              ─────▶ [source ICD +
+                                           │                                                       canonical ICD]
+                                           │
+                                           └── location
+                                               ─────────▶ EncounterLocation
+                                                           │
+                                                           ├── period
+                                                           │   ───────▶ transfer interval
+                                                           │             [intime → outtime]
+                                                           │
+                                                           └── location
+                                                               ───────▶ Location
+                                                                         │
+                                                                         ├── mode
+                                                                         │   ─────▶ kind
+                                                                         │
+                                                                         ├── name
+                                                                         │   ─────▶ source careunit
+                                                                         │
+                                                                         └── type
+                                                                             ─────▶ [closest applicable
+                                                                                      HL7 care-setting role
+                                                                                      + SNOMED where
+                                                                                      defensibly specific]
+```
+
+The backbone keeps properties such as `status`, `class`, `priority`, `category`, `identifier`, and extensions visible while hiding lower-level `CodeableConcept`/`Coding` expansion, terminology-system URIs, mapping enumerations, extension canonical URLs, and comparable representation detail. The canonical DAG above remains the source of truth for those internals.
+
+---
+
 
 ## 5. Observation model
 
