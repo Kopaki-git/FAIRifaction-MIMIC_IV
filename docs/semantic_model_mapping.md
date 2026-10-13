@@ -103,82 +103,364 @@ This is the canonical inspection DAG. Repeated resource names denote the same re
 
 ```text
 Observation
-├── rdf:type → fhir:Observation
-├── status → final
-├── category → CodeableConcept
-│   └── coding → observation-category:vital-signs
-├── code → CodeableConcept
-│   ├── coding → MIMIC item coding
-│   │   ├── code → itemid
-│   │   └── display → measurement_label
-│   ├── coding → required LOINC
-│   │   ├── HR   → 8867-4
-│   │   ├── RR   → 9279-1
-│   │   └── SpO₂ → 2708-6
-│   └── coding → additional SpO₂ LOINC 59408-5
-├── subject → Patient
-│   └── identifier → subject_id
-├── effectiveDateTime → charttime
-├── valueQuantity → Quantity
-│   ├── value → valuenum
-│   ├── unit → original valueuom
-│   ├── system → http://unitsofmeasure.org
-│   └── code
-│       ├── HR   → /min
-│       ├── RR   → /min
-│       └── SpO₂ → %
-├── extension → Warning Extension
-│   └── valueBoolean
-│       ├── warning 0 → false
-│       └── warning 1 → true
-└── encounter → ICU Encounter
-    ├── identifier → stay_id
-    ├── status → finished
-    ├── class → v3-ActCode:ACUTE
-    ├── subject → Patient
-    ├── period
-    │   ├── start → ICU intime
-    │   └── end → ICU outtime
-    ├── partOf → Hospital Encounter
-    │   ├── identifier → hadm_id
-    │   ├── status → finished
-    │   ├── class → v3-ActCode:IMP
-    │   ├── subject → Patient
-    │   ├── period
-    │   │   ├── start → admittime
-    │   │   └── end → dischtime
-    │   ├── extension → Admission-type Extension
-    │   │   └── valueString → admission_type verbatim
-    │   ├── priority → CodeableConcept [only where mapped]
-    │   │   └── coding → v3-ActPriority
-    │   │       ├── ELECTIVE     → EL
-    │   │       ├── URGENT       → UR
-    │   │       ├── EW EMER.     → EM
-    │   │       └── DIRECT EMER. → EM
-    │   └── diagnosis → EncounterDiagnosis
-    │       ├── rank → 1
-    │       ├── use → diagnosis-role:billing
-    │       └── condition → Condition
-    │           ├── subject → Patient
-    │           ├── encounter → Hospital Encounter
-    │           ├── category → condition-category:encounter-diagnosis
-    │           └── code → CodeableConcept
-    │               ├── coding → original MIMIC-compatible ICD coding
-    │               │   ├── code → raw icd_code
-    │               │   └── display → long_title
-    │               └── coding → canonical ICD coding
-    │                   ├── ICD-9-CM  → http://hl7.org/fhir/sid/icd-9-cm
-    │                   └── ICD-10-CM → http://hl7.org/fhir/sid/icd-10-cm
-    └── location → EncounterLocation [repeated for each interval]
-        ├── period
-        │   ├── start → transfer intime
-        │   └── end → transfer outtime
-        └── location → Location
-            ├── mode → kind
-            ├── name → careunit verbatim
-            └── type [0..*] → CodeableConcept
-                ├── coding → HL7 v3-RoleCode location role(s)
-                └── coding → SNOMED CT only where directly defensible
+│
+├── rdf:type ─────────────────────────────────────────▶ fhir:Observation
+│
+├── fhir:Observation.status ──────────────────────────▶ "final"
+│
+├── fhir:Observation.category ────────────────────────▶ CodeableConcept
+│                                                       │
+│                                                       └── coding ─▶ Coding
+│                                                                   ├── system
+│                                                                   │   ─▶ http://terminology.hl7.org/
+│                                                                   │       CodeSystem/observation-category
+│                                                                   └── code
+│                                                                       ─▶ "vital-signs"
+│
+├── fhir:Observation.code ────────────────────────────▶ CodeableConcept
+│                                                       │
+│                                                       ├── coding ─▶ MIMIC Coding
+│                                                       │             ├── system
+│                                                       │             │   ─▶ [MIMIC item CodeSystem URI]
+│                                                       │             ├── code
+│                                                       │             │   ─▶ itemid
+│                                                       │             └── display
+│                                                       │                 ─▶ measurement_label
+│                                                       │
+│                                                       ├── coding ─▶ required LOINC Coding
+│                                                       │             ├── system
+│                                                       │             │   ─▶ http://loinc.org
+│                                                       │             └── code
+│                                                       │                 ├── HR   ─▶ 8867-4
+│                                                       │                 ├── RR   ─▶ 9279-1
+│                                                       │                 └── SpO₂ ─▶ 2708-6
+│                                                       │
+│                                                       └── coding ─▶ additional LOINC Coding
+│                                                                     [SpO₂ only]
+│                                                                     ├── system
+│                                                                     │   ─▶ http://loinc.org
+│                                                                     └── code
+│                                                                         ─▶ 59408-5
+│
+├── fhir:Observation.subject ─────────────────────────▶ Patient
+│                                                       │
+│                                                       ├── rdf:type
+│                                                       │   ─▶ fhir:Patient
+│                                                       │
+│                                                       └── identifier ─▶ Identifier
+│                                                                         ├── system
+│                                                                         │   ─▶ [MIMIC patient-ID URI]
+│                                                                         └── value
+│                                                                             ─▶ subject_id
+│
+├── fhir:Observation.effectiveDateTime ───────────────▶ charttime
+│
+├── fhir:Observation.valueQuantity ───────────────────▶ Quantity
+│                                                       │
+│                                                       ├── value ─▶ valuenum
+│                                                       ├── unit  ─▶ original valueuom
+│                                                       │            ├── "bpm"
+│                                                       │            ├── "insp/min"
+│                                                       │            └── "%"
+│                                                       ├── system
+│                                                       │   ─▶ http://unitsofmeasure.org
+│                                                       └── code
+│                                                           ├── HR   ─▶ "/min"
+│                                                           ├── RR   ─▶ "/min"
+│                                                           └── SpO₂ ─▶ "%"
+│
+├── fhir:Observation.extension ───────────────────────▶ Warning Extension
+│                                                       │
+│                                                       ├── url
+│                                                       │   ─▶ [project canonical extension URL]
+│                                                       └── valueBoolean
+│                                                           ├── source 0 ─▶ false
+│                                                           └── source 1 ─▶ true
+│
+└── fhir:Observation.encounter ───────────────────────▶ ICU Encounter
+                                                        │
+                                                        ├── rdf:type
+                                                        │   ─▶ fhir:Encounter
+                                                        │
+                                                        ├── identifier ─▶ Identifier
+                                                        │                 ├── system
+                                                        │                 │   ─▶ [MIMIC ICU-stay-ID URI]
+                                                        │                 └── value
+                                                        │                     ─▶ stay_id
+                                                        │
+                                                        ├── status
+                                                        │   ─▶ "finished"
+                                                        │
+                                                        ├── class ─▶ Coding
+                                                        │             ├── system
+                                                        │             │   ─▶ http://terminology.hl7.org/
+                                                        │             │       CodeSystem/v3-ActCode
+                                                        │             └── code
+                                                        │                 ─▶ "ACUTE"
+                                                        │
+                                                        ├── subject ─▶ Patient
+                                                        │               │
+                                                        │               └── identifier
+                                                        │                   ─▶ subject_id
+                                                        │
+                                                        ├── period ─▶ Period
+                                                        │             ├── start ─▶ ICU intime
+                                                        │             └── end   ─▶ ICU outtime
+                                                        │
+                                                        ├── partOf ─▶ Hospital Encounter
+                                                        │              │
+                                                        │              ├── rdf:type
+                                                        │              │   ─▶ fhir:Encounter
+                                                        │              │
+                                                        │              ├── identifier ─▶ Identifier
+                                                        │              │                 ├── system
+                                                        │              │                 │   ─▶ [MIMIC admission-ID URI]
+                                                        │              │                 └── value
+                                                        │              │                     ─▶ hadm_id
+                                                        │              │
+                                                        │              ├── status
+                                                        │              │   ─▶ "finished"
+                                                        │              │
+                                                        │              ├── class ─▶ Coding
+                                                        │              │             ├── system
+                                                        │              │             │   ─▶ http://terminology.hl7.org/
+                                                        │              │             │       CodeSystem/v3-ActCode
+                                                        │              │             └── code
+                                                        │              │                 ─▶ "IMP"
+                                                        │              │
+                                                        │              ├── priority
+                                                        │              │   ─▶ CodeableConcept
+                                                        │              │       │
+                                                        │              │       └── coding ─▶ Coding
+                                                        │              │                     ├── system
+                                                        │              │                     │   ─▶ http://terminology.hl7.org/
+                                                        │              │                     │       CodeSystem/v3-ActPriority
+                                                        │              │                     └── code
+                                                        │              │                         ├── ELECTIVE
+                                                        │              │                         │   ─▶ "EL"
+                                                        │              │                         ├── URGENT
+                                                        │              │                         │   ─▶ "UR"
+                                                        │              │                         ├── EW EMER.
+                                                        │              │                         │   ─▶ "EM"
+                                                        │              │                         └── DIRECT EMER.
+                                                        │              │                             ─▶ "EM"
+                                                        │              │
+                                                        │              │   [no priority asserted for
+                                                        │              │    OBSERVATION ADMIT or
+                                                        │              │    SURGICAL SAME DAY ADMISSION]
+                                                        │              │
+                                                        │              ├── extension
+                                                        │              │   ─▶ Admission-type Extension
+                                                        │              │       ├── url
+                                                        │              │       │   ─▶ [project canonical
+                                                        │              │       │       extension URL]
+                                                        │              │       └── valueString
+                                                        │              │           ─▶ admission_type
+                                                        │              │               [verbatim MIMIC value]
+                                                        │              │
+                                                        │              ├── subject ─▶ Patient
+                                                        │              │               │
+                                                        │              │               └── identifier
+                                                        │              │                   ─▶ subject_id
+                                                        │              │
+                                                        │              ├── period ─▶ Period
+                                                        │              │             ├── start ─▶ admittime
+                                                        │              │             └── end   ─▶ dischtime
+                                                        │              │
+                                                        │              └── diagnosis
+                                                        │                  ─▶ EncounterDiagnosis
+                                                        │                      │
+                                                        │                      ├── rank
+                                                        │                      │   ─▶ 1
+                                                        │                      │
+                                                        │                      ├── use
+                                                        │                      │   ─▶ CodeableConcept
+                                                        │                      │       │
+                                                        │                      │       └── coding ─▶ Coding
+                                                        │                      │                     ├── system
+                                                        │                      │                     │   ─▶ http://terminology.hl7.org/
+                                                        │                      │                     │       CodeSystem/diagnosis-role
+                                                        │                      │                     └── code
+                                                        │                      │                         ─▶ "billing"
+                                                        │                      │
+                                                        │                      └── condition
+                                                        │                          ─▶ Condition
+                                                        │                              │
+                                                        │                              ├── rdf:type
+                                                        │                              │   ─▶ fhir:Condition
+                                                        │                              │
+                                                        │                              ├── subject
+                                                        │                              │   ─▶ Patient
+                                                        │                              │       │
+                                                        │                              │       └── identifier
+                                                        │                              │           ─▶ subject_id
+                                                        │                              │
+                                                        │                              ├── encounter
+                                                        │                              │   ─▶ Hospital Encounter
+                                                        │                              │       │
+                                                        │                              │       └── identifier
+                                                        │                              │           ─▶ hadm_id
+                                                        │                              │
+                                                        │                              ├── category
+                                                        │                              │   ─▶ CodeableConcept
+                                                        │                              │       │
+                                                        │                              │       └── coding ─▶ Coding
+                                                        │                              │                     ├── system
+                                                        │                              │                     │   ─▶ http://terminology.hl7.org/
+                                                        │                              │                     │       CodeSystem/condition-category
+                                                        │                              │                     └── code
+                                                        │                              │                         ─▶ "encounter-diagnosis"
+                                                        │                              │
+                                                        │                              └── code
+                                                        │                                  ─▶ CodeableConcept
+                                                        │                                      │
+                                                        │                                      ├── coding
+                                                        │                                      │   ─▶ original MIMIC ICD Coding
+                                                        │                                      │       ├── system
+                                                        │                                      │       │   ─▶ [MIMIC ICD-9/10
+                                                        │                                      │       │       CodeSystem selected
+                                                        │                                      │       │       by icd_version]
+                                                        │                                      │       ├── code
+                                                        │                                      │       │   ─▶ raw icd_code
+                                                        │                                      │       └── display
+                                                        │                                      │           ─▶ long_title
+                                                        │                                      │
+                                                        │                                      └── coding
+                                                        │                                          ─▶ canonical ICD Coding
+                                                        │                                              ├── system
+                                                        │                                              │   ├── ICD-9-CM
+                                                        │                                              │   │   ─▶ http://hl7.org/fhir/
+                                                        │                                              │   │       sid/icd-9-cm
+                                                        │                                              │   └── ICD-10-CM
+                                                        │                                              │       ─▶ http://hl7.org/fhir/
+                                                        │                                              │           sid/icd-10-cm
+                                                        │                                              └── code
+                                                        │                                                  ─▶ validated canonical
+                                                        │                                                      dotted code
+                                                        │
+                                                        └── location
+                                                            ─▶ EncounterLocation
+                                                                │
+                                                                ├── period ─▶ Period
+                                                                │             ├── start
+                                                                │             │   ─▶ transfer intime
+                                                                │             └── end
+                                                                │                 ─▶ transfer outtime
+                                                                │
+                                                                └── location ─▶ Location
+                                                                    │
+                                                                    ├── rdf:type
+                                                                    │   ─▶ fhir:Location
+                                                                    │
+                                                                    ├── mode
+                                                                    │   ─▶ "kind"
+                                                                    │
+                                                                    ├── name
+                                                                    │   ─▶ careunit
+                                                                    │       [verbatim MIMIC label]
+                                                                    │
+                                                                    └── type [0..*]
+                                                                        ─▶ CodeableConcept(s)
+                                                                            │
+                                                                            ├── Medical Intensive Care Unit (MICU)
+                                                                            │   └── CodeableConcept
+                                                                            │       ├── coding ─▶ Coding
+                                                                            │       │             ├── system
+                                                                            │       │             │   ─▶ http://terminology.hl7.org/
+                                                                            │       │             │       CodeSystem/v3-RoleCode
+                                                                            │       │             └── code
+                                                                            │       │                 ─▶ "ICU"
+                                                                            │       └── coding ─▶ Coding
+                                                                            │                     ├── system
+                                                                            │                     │   ─▶ http://snomed.info/sct
+                                                                            │                     └── code
+                                                                            │                         ─▶ 441994008
+                                                                            │                             Medical intensive care unit
+                                                                            │
+                                                                            ├── Surgical Intensive Care Unit (SICU)
+                                                                            │   └── CodeableConcept
+                                                                            │       ├── coding ─▶ Coding
+                                                                            │       │             ├── system
+                                                                            │       │             │   ─▶ http://terminology.hl7.org/
+                                                                            │       │             │       CodeSystem/v3-RoleCode
+                                                                            │       │             └── code
+                                                                            │       │                 ─▶ "ICU"
+                                                                            │       └── coding ─▶ Coding
+                                                                            │                     ├── system
+                                                                            │                     │   ─▶ http://snomed.info/sct
+                                                                            │                     └── code
+                                                                            │                         ─▶ 418433008
+                                                                            │                             Surgical intensive care unit
+                                                                            │
+                                                                            ├── Medical/Surgical Intensive Care Unit (MICU/SICU)
+                                                                            │   └── CodeableConcept
+                                                                            │       └── coding ─▶ Coding
+                                                                            │                     ├── system
+                                                                            │                     │   ─▶ http://terminology.hl7.org/
+                                                                            │                     │       CodeSystem/v3-RoleCode
+                                                                            │                     └── code
+                                                                            │                         ─▶ "ICU"
+                                                                            │
+                                                                            ├── Trauma SICU (TSICU)
+                                                                            │   └── CodeableConcept
+                                                                            │       └── coding ─▶ Coding
+                                                                            │                     ├── system
+                                                                            │                     │   ─▶ http://terminology.hl7.org/
+                                                                            │                     │       CodeSystem/v3-RoleCode
+                                                                            │                     └── code
+                                                                            │                         ─▶ "ICU"
+                                                                            │
+                                                                            ├── Neuro Surgical Intensive Care Unit (Neuro SICU)
+                                                                            │   ├── CodeableConcept
+                                                                            │   │   └── coding ─▶ Coding
+                                                                            │   │                 ├── system
+                                                                            │   │                 │   ─▶ http://terminology.hl7.org/
+                                                                            │   │                 │       CodeSystem/v3-RoleCode
+                                                                            │   │                 └── code
+                                                                            │   │                     ─▶ "ICU"
+                                                                            │   └── CodeableConcept
+                                                                            │       └── coding ─▶ Coding
+                                                                            │                     ├── system
+                                                                            │                     │   ─▶ http://terminology.hl7.org/
+                                                                            │                     │       CodeSystem/v3-RoleCode
+                                                                            │                     └── code
+                                                                            │                         ─▶ "NS"
+                                                                            │
+                                                                            ├── Neuro Stepdown
+                                                                            │   └── CodeableConcept
+                                                                            │       └── coding ─▶ Coding
+                                                                            │                     ├── system
+                                                                            │                     │   ─▶ http://terminology.hl7.org/
+                                                                            │                     │       CodeSystem/v3-RoleCode
+                                                                            │                     └── code
+                                                                            │                         ─▶ "HU"
+                                                                            │
+                                                                            ├── Cardiac Vascular Intensive Care Unit (CVICU)
+                                                                            │   └── CodeableConcept
+                                                                            │       └── coding ─▶ Coding
+                                                                            │                     ├── system
+                                                                            │                     │   ─▶ http://terminology.hl7.org/
+                                                                            │                     │       CodeSystem/v3-RoleCode
+                                                                            │                     └── code
+                                                                            │                         ─▶ "ICU"
+                                                                            │
+                                                                            ├── Coronary Care Unit (CCU)
+                                                                            │   └── CodeableConcept
+                                                                            │       └── coding ─▶ Coding
+                                                                            │                     ├── system
+                                                                            │                     │   ─▶ http://terminology.hl7.org/
+                                                                            │                     │       CodeSystem/v3-RoleCode
+                                                                            │                     └── code
+                                                                            │                         ─▶ "CCU"
+                                                                            │
+                                                                            └── Neuro Intermediate
+                                                                                └── CodeableConcept
+                                                                                    └── coding ─▶ Coding
+                                                                                                  ├── system
+                                                                                                  │   ─▶ http://terminology.hl7.org/
+                                                                                                  │       CodeSystem/v3-RoleCode
+                                                                                                  └── code
+                                                                                                      ─▶ "HU"
 ```
 
 ---
@@ -383,23 +665,32 @@ Each distinct MIMIC care-unit label is represented as a reusable `Location` with
 
 This preserves time-resolved within-ICU care-setting history rather than attaching one first-care-unit label to the entire stay.
 
-### 9.2 HL7 Location.type mappings
+### 9.2 HL7 Location.type mappings and extensible-binding policy
 
-FHIR R4 `Location.type` has an extensible binding to ServiceDeliveryLocationRoleType. The approved source-to-HL7 mappings are:
+FHIR R4 `Location.type` is a `CodeableConcept` with an **extensible binding** to `ServiceDeliveryLocationRoleType`.
 
-| MIMIC careunit | HL7 role code(s) |
-|---|---|
-| Medical Intensive Care Unit (MICU) | `ICU` |
-| Surgical Intensive Care Unit (SICU) | `ICU` |
-| Medical/Surgical Intensive Care Unit (MICU/SICU) | `ICU` |
-| Trauma SICU (TSICU) | `ICU` |
-| Neuro Surgical Intensive Care Unit (Neuro SICU) | `ICU` and `NS` as separate `Location.type` values |
-| Neuro Stepdown | `HU` |
-| Cardiac Vascular Intensive Care Unit (CVICU) | `ICU` |
-| Coronary Care Unit (CCU) | `CCU` |
-| Neuro Intermediate | `HU` |
+Under an extensible binding, if a code in the bound value set applies to the concept being represented, a conformant instance must include a coding from that value set. If the closest applicable bound concept is broader than the intended meaning, the closest applicable bound code is still used. Because `Location.type` is a `CodeableConcept`, a more specific coding from another terminology may additionally be supplied, but it does not replace the applicable bound coding.
 
-Code system:
+This explains two deliberate features of the care-unit model:
+
+- The HL7 mappings are sometimes **lossy classifications rather than equivalence mappings**. For example, `Trauma SICU`, `Cardiac Vascular Intensive Care Unit`, and `Medical/Surgical Intensive Care Unit` all receive the broader bound role `ICU`. Their source specificity is not discarded: the verbatim MIMIC `careunit` remains represented by the `Location`.
+- SNOMED CT is therefore used as an **additional coding**, not as a replacement for the HL7 coding, where it provides defensible extra specificity. For MICU and SICU, the bound HL7 role `ICU` is retained and the more specific SNOMED CT concept is added to the same `CodeableConcept`. Where no sufficiently exact SNOMED concept was established, no additional SNOMED coding is asserted.
+
+The approved closest-applicable bound roles are:
+
+| MIMIC careunit | Closest applicable HL7 role code(s) | Specificity relative to source |
+|---|---|---|
+| Medical Intensive Care Unit (MICU) | `ICU` | broader; supplemented by SNOMED CT |
+| Surgical Intensive Care Unit (SICU) | `ICU` | broader; supplemented by SNOMED CT |
+| Medical/Surgical Intensive Care Unit (MICU/SICU) | `ICU` | broader |
+| Trauma SICU (TSICU) | `ICU` | broader |
+| Neuro Surgical Intensive Care Unit (Neuro SICU) | `ICU` and `NS` as separate `Location.type` values | combined broader role facets |
+| Neuro Stepdown | `HU` | broader |
+| Cardiac Vascular Intensive Care Unit (CVICU) | `ICU` | broader |
+| Coronary Care Unit (CCU) | `CCU` | direct |
+| Neuro Intermediate | `HU` | broader |
+
+Bound code system:
 
 `http://terminology.hl7.org/CodeSystem/v3-RoleCode`
 
@@ -410,9 +701,11 @@ Relevant meanings:
 - `HU` — Hospital unit;
 - `CCU` — Coronary care unit.
 
+The authoritative FHIR rule behind this policy is the R4 extensible-binding rule: when an applicable bound concept is broader than the intended meaning, the closest applicable code from the bound value set is still used; a more specific external coding may additionally be included in a `CodeableConcept`, but cannot replace the applicable bound coding.
+
 ### 9.3 Direct SNOMED CT co-coding
 
-SNOMED CT is included directly in instance-level `Location.type` only where the match was judged sufficiently direct:
+Following the extensible-binding policy above, SNOMED CT is added as a second coding only where it supplies a defensible more-specific representation of the same intended care-unit concept.
 
 | MIMIC careunit | SNOMED CT |
 |---|---|
