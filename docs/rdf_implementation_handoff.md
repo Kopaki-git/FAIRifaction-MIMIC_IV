@@ -2,6 +2,7 @@
 
 **Status:** Proposed implementation handoff  
 **Prepared:** 14 October 2026  
+**First cleanup synchronization:** 15 October 2026  
 **Repository:** [Kopaki-git/FAIRifaction-MIMIC_IV](https://github.com/Kopaki-git/FAIRifaction-MIMIC_IV)  
 **Inspected main commit:** `5893d61b6b0135c436d1e6a146452791fa73c96c`
 
@@ -156,7 +157,7 @@ The Canvas page specifies:
 
 `https://w3id.org/FAIR-course-UT/2025-2026/group{groupnumber}/data#`
 
-However, that page also contains inconsistent examples, while the legacy repository vocabulary uses:
+However, that page also contains inconsistent examples; the now-removed legacy repository vocabulary previously used:
 
 `https://w3id.org/FAIR-course-UT/2026-2027/group4/ont#`
 
@@ -190,20 +191,18 @@ Identify genuine external linking points and describe possible cross-dataset que
 
 Maintain an evidence-based distinction between baseline FAIR properties and additional FAIRification value.
 
-## 8. Repository files that must not be mistaken for current authority
+## 8. Repository documentation and cleanup status (15 October 2026)
 
-Several files remain stale or superseded:
+The canonical semantic source of truth remains `docs/semantic_model_mapping.md`. Its companion `docs/semantic_mapping_provenance.md` has been **replaced** with a bounded, current FHIR-based decision-provenance record. It is not an independent comprehensive terminology validation.
+
+The superseded files `docs/semantic_model_graph.dot`, `vocab/mimic-icu.ttl`, and `src/explore_data.py` have been **removed from the current repository tree**. Their previous versions remain accessible in Git history, but must not be used as current model or execution inputs.
+
+**Still pending a separate, user-approved cleanup:**
 
 - `README.md` — still describes the previous single-CSV resource.
-- `AGENTS.md` — still contains old schema and implementation instructions.
-- `docs/semantic_mapping_provenance.md` — explains the superseded IAO/SIO/QUDT model.
-- `docs/semantic_model_graph.dot` — obsolete intermediate Graphviz model.
-- `vocab/mimic-icu.ttl` — legacy vocabulary for the former first-careunit design.
-- `src/explore_data.py` — early exploration, not the canonical extraction.
+- `AGENTS.md` — still contains old schema and implementation instructions and is especially important to replace before using Codex.
 
-Read these only with their historical status understood. They must not override the canonical model or the five-table resource.
-
-Synchronizing repository documentation and replacing obsolete provenance material remain later tasks requiring separate authorization.
+Until these two files are synchronized, do not let them override the canonical specification, derived five-table resource, or this handoff.
 
 ## 9. Next implementation session
 
