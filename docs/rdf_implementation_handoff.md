@@ -197,12 +197,12 @@ The canonical semantic source of truth remains `docs/semantic_model_mapping.md`.
 
 The superseded files `docs/semantic_model_graph.dot`, `vocab/mimic-icu.ttl`, and `src/explore_data.py` have been **removed from the current repository tree**. Their previous versions remain accessible in Git history, but must not be used as current model or execution inputs.
 
-**Still pending a separate, user-approved cleanup:**
+**README and Codex instructions synchronized (15 October 2026):**
 
-- `README.md` — still describes the previous single-CSV resource.
-- `AGENTS.md` — still contains old schema and implementation instructions and is especially important to replace before using Codex.
+- `README.md` now describes the current five-table resource, canonical model, reproduction workflow, and project status.
+- `AGENTS.md` now gives Codex concise operating instructions, the authority hierarchy, frozen semantic-model boundaries, validation checks, and propose → approve → execute change control.
 
-Until these two files are synchronized, do not let them override the canonical specification, derived five-table resource, or this handoff.
+Both replacements were verified in commit `12c3f15101a67ab2674e44a45b657512f027323d`. Consult the current versions, not older copies retained in Git history.
 
 ## 9. Next implementation session
 
