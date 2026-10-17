@@ -1,0 +1,5 @@
+# RDF generation and acceptance checks (src/generate_rdf.py, tests/test_rdf.py).
+# The extraction notebook additionally needs pandas and jupyter (see README).
+rdflib==7.6.0
+pyoxigraph==0.5.11
+pytest==9.1.1

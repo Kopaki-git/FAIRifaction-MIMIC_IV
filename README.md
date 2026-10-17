@@ -57,6 +57,19 @@ The original downloaded MIMIC files are deliberately excluded from Git. The five
 
 MIMIC timestamps are shifted for deidentification. They preserve relevant temporal relationships but must not be interpreted as real-world calendar dates.
 
+## Generating the RDF
+
+The RDF export is generated from the five derived tables by a Python/RDFLib script:
+
+```bash
+python3 -m venv venv
+venv/bin/python -m pip install -r requirements.txt
+venv/bin/python src/generate_rdf.py          # writes rdf/mimic_icu_vitals_4h.ttl
+venv/bin/python -m pytest tests/ -v          # acceptance checks
+```
+
+The identifier decisions, serialization rules, verification scope and limitations are documented in [`docs/rdf_serialization.md`](docs/rdf_serialization.md).
+
 ## Canonical semantic model
 
 The approved clinical-semantic specification is:
@@ -92,20 +105,18 @@ The canonical model is FHIR-aligned. **Strict FHIR-RDF serialization and FHIR in
 
 ## Current implementation status
 
-As of 15 October 2026:
+As of 17 October 2026:
 
 - Canonical source extraction and validation: **completed**.
 - Clinical-semantic model and terminology choices: **audited and frozen**.
 - Current semantic provenance documentation: **available**, with explicit evidence limitations.
-- Executable RDF transformation and Turtle export: **not yet committed**.
-- RDF generation checks and publication infrastructure: **pending**.
+- Identifier and namespace decisions: **resolved**; the W3ID base is adopted pending course confirmation.
+- Executable RDF transformation (Python/RDFLib) and Turtle export: **implemented**, `rdf/mimic_icu_vitals_4h.ttl`.
+- RDF acceptance checks: **implemented** in `tests/test_rdf.py`. They check syntax, source fidelity, relational integrity, mapping fidelity and reproducibility, not FHIR conformance.
+- W3ID redirect registration and publication infrastructure: **pending**.
 - Metadata and FAIR Data Point work: **in progress or pending**, coordinated separately.
 
-The immediate next task is reproducible RDF generation. The implementation plan, acceptance criteria and unresolved namespace questions are recorded in:
-
-[`docs/rdf_implementation_handoff.md`](docs/rdf_implementation_handoff.md)
-
-Python/RDFLib is the preferred implementation route, with OpenRefine RDFTransform available for targeted independent verification if needed. These remain implementation choices, not completed work.
+The output is FHIR R4-aligned, simplified FHIR-predicate RDF, not strict FHIR-RDF. Its decisions and limitations are recorded in [`docs/rdf_serialization.md`](docs/rdf_serialization.md). The original acceptance criteria are in [`docs/rdf_implementation_handoff.md`](docs/rdf_implementation_handoff.md).
 
 ## Repository structure
 
@@ -124,9 +135,17 @@ Python/RDFLib is the preferred implementation route, with OpenRefine RDFTransfor
 ├── docs/
 │   ├── semantic_model_mapping.md
 │   ├── semantic_mapping_provenance.md
-│   └── rdf_implementation_handoff.md
-└── notebooks/
-    └── 01_dataset_exploration_and_extraction.ipynb
+│   ├── rdf_implementation_handoff.md
+│   └── rdf_serialization.md
+├── notebooks/
+│   └── 01_dataset_exploration_and_extraction.ipynb
+├── rdf/
+│   └── mimic_icu_vitals_4h.ttl
+├── requirements.txt
+├── src/
+│   └── generate_rdf.py
+└── tests/
+    └── test_rdf.py
 ```
 
 ## Source, licensing and attribution

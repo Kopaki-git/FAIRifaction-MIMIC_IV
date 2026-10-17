@@ -151,6 +151,8 @@ These checks provide evidence of RDF syntax, source fidelity, relational integri
 
 ## 7. Unresolved implementation and publication decisions
 
+> **Update, 17 October 2026:** The W3ID prefix and the resource identity and local namespace decisions below were resolved with the user, and the RDF generator has been implemented. The adopted base is `https://w3id.org/FAIR-course-UT/2026-2027/group4/`, pending course confirmation. See [`rdf_serialization.md`](rdf_serialization.md) for the decisions, serialization rules, verification and limitations. The metadata, publication and external-integration items remain open. The text below is kept as the original record.
+
 ### W3ID prefix — confirm before public identifier finalization
 
 The Canvas page specifies:
