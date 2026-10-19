@@ -341,15 +341,32 @@ def extension(g, url, predicate, value):
     return node
 
 
-# --- Resource builders ---
+# =============================================================================
+# Resource builders: one function per resource kind, each a flat list of
+# g.add() calls that mirrors its branch of the model's diagram so the two can
+# be checked side by side. Builders only translate the rows they are given;
+# the pipeline below finds and matches rows across tables. Quoted constants
+# ("final", "finished", "IMP", ...) are model policy, not source data.
+# =============================================================================
 
 def add_patient(g, subject_id):
+    """Add a Patient carrying only its MIMIC identifier (model §7.1).
+
+    Patients have no source table of their own; the pipeline derives them from
+    the admissions. The model defines nothing else about patients in scope.
+    """
     iri = patient_iri(subject_id)
     g.add((iri, RDF.type, FHIR.Patient))
     g.add((iri, FHIR["Patient.identifier"], identifier(g, ID_PATIENT, subject_id)))
 
 
 def add_location(g, careunit):
+    """Add one Location per care-unit kind (model §9).
+
+    mode "kind" means a type of unit, not a specific ward, so every interval
+    in that unit references this single resource. Each entry in
+    CARE_UNIT_TYPES[careunit] becomes a separate Location.type.
+    """
     iri = location_iri(careunit)
     g.add((iri, RDF.type, FHIR.Location))
     g.add((iri, FHIR["Location.mode"], Literal("kind")))
@@ -359,6 +376,16 @@ def add_location(g, careunit):
 
 
 def add_hospital_encounter(g, row, diagnosis):
+    """Add a Hospital Encounter with its first-ranked diagnosis (model §7.3, §8, §10.2).
+
+    The verbatim admission_type extension is written for every encounter,
+    because the priority mapping loses detail (EW EMER. and DIRECT EMER. both
+    become EM) and must not replace the source value. Priority is written only
+    where an approved mapping exists; RDF has no null, so an unmapped type has
+    no priority triple at all. The diagnosis row comes from another table, so
+    the pipeline passes it in. Encounter.diagnosis is a blank node because rank
+    and role describe the condition's role in this particular stay.
+    """
     iri = hospital_encounter_iri(row["hadm_id"])
     g.add((iri, RDF.type, FHIR.Encounter))
     g.add((iri, FHIR["Encounter.identifier"], identifier(g, ID_ENCOUNTER_HOSP, row["hadm_id"])))
@@ -381,6 +408,12 @@ def add_hospital_encounter(g, row, diagnosis):
 
 
 def add_condition(g, row):
+    """Add the Condition for an admission's first-ranked billed diagnosis (model §10).
+
+    Condition.code keeps the raw MIMIC code with long_title as display, plus
+    the canonical dotted ICD code; neither replaces the other. Condition.encounter
+    links back to the encounter, so queries can start from either side.
+    """
     source_system, canonical_system = lookup(ICD_SYSTEMS, row["icd_version"], "icd_version")
     iri = condition_iri(row["hadm_id"])
     g.add((iri, RDF.type, FHIR.Condition))
@@ -395,6 +428,12 @@ def add_condition(g, row):
 
 
 def add_icu_encounter(g, row, intervals):
+    """Add an ICU Encounter with its care-unit intervals (model §7.2, §9.1).
+
+    Each interval becomes an Encounter.location blank node with its own period,
+    referencing the shared Location for that care unit. transfer_id and
+    eventtype are deliberately omitted (model §11).
+    """
     iri = icu_encounter_iri(row["stay_id"])
     g.add((iri, RDF.type, FHIR.Encounter))
     g.add((iri, FHIR["Encounter.identifier"], identifier(g, ID_ENCOUNTER_ICU, row["stay_id"])))
@@ -412,6 +451,13 @@ def add_icu_encounter(g, row, intervals):
 
 
 def add_observation(g, row):
+    """Add one Observation for a source row (model §5, §6).
+
+    Before building, the row's label and unit must match the item table: the
+    UCUM code is chosen by itemid, so a row with an unexpected unit would
+    otherwise get a wrong normalisation. A duplicate IRI also raises an error,
+    because RDF would silently merge the two rows (see observation_iri).
+    """
     item = lookup(ITEMS, row["itemid"], "itemid")
     if row["measurement_label"] != item["label"]:
         raise ValueError(f"itemid {row['itemid']} has unexpected label {row['measurement_label']!r}")
