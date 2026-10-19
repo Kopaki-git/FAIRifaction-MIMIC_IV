@@ -1,0 +1,177 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix : <http://example.org/metadata#> .
+
+:GeneralGroup
+  a sh:PropertyGroup ;
+  rdfs:label "General" ;
+  sh:order 0 .
+
+dcat:Dataset
+  a sh:NodeShape ;
+  rdfs:label "MIMIC IV-metadata" ;
+  dct:description "SHACL model proposed for the MIMIC IV demo dataset" ;
+  sh:targetClass dcat:Dataset ;
+  sh:property [
+    sh:path dct:identifier ;
+    sh:name "Identifier" ;
+    sh:description "A unique, persistent identifier (like a DOI) for the dataset." ;
+    sh:datatype xsd:string ;
+    sh:minCount 1 ;
+    sh:order 0 ;
+    dash:editor dash:TextFieldEditor ;
+    sh:group :GeneralGroup
+  ] ;
+  sh:property [
+    sh:path dcat:theme ;
+    sh:name "Theme" ;
+    sh:description "A main category of the dataset, represented by a URI from a controlled vocabulary." ;
+    sh:nodeKind sh:IRI ;
+    sh:order 0 ;
+    dash:editor dash:TextFieldEditor ;
+    sh:group :GeneralGroup
+  ] ;
+  sh:property [
+    sh:path dcat:distribution ;
+    sh:name "Distribution" ;
+    sh:description "Available distributions (files, APIs) for this dataset." ;
+    sh:node dcat:Distribution ;
+    sh:minCount 1 ;
+    sh:order 0 ;
+    dash:editor dash:DetailsEditor ;
+    sh:group :GeneralGroup
+  ] ;
+  sh:property [
+    sh:path dct:title ;
+    sh:name "Title" ;
+    sh:description "The official, human-readable title of the dataset." ;
+    sh:datatype xsd:string ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:order 1 ;
+    dash:editor dash:TextFieldEditor ;
+    sh:group :GeneralGroup
+  ] ;
+  sh:property [
+    sh:path dct:description ;
+    sh:name "Description" ;
+    sh:description "A comprehensive summary detailing the contents, purpose, and scope of the dataset." ;
+    sh:datatype xsd:string ;
+    sh:minCount 1 ;
+    sh:maxLength 2000 ;
+    sh:order 2 ;
+    dash:editor dash:TextAreaEditor ;
+    sh:group :GeneralGroup
+  ] ;
+  sh:property [
+    sh:path dct:creator ;
+    sh:name "Creator" ;
+    sh:description "The primary organization or entity responsible for creating the dataset." ;
+    sh:node foaf:Organization ;
+    sh:minCount 1 ;
+    sh:order 3 ;
+    dash:editor dash:DetailsEditor ;
+    sh:group :GeneralGroup
+  ] ;
+  sh:property [
+    sh:path dct:publisher ;
+    sh:name "Publisher" ;
+    sh:description "The organization responsible for hosting, distributing, and making the dataset available." ;
+    sh:node foaf:Organization ;
+    sh:minCount 1 ;
+    sh:order 4 ;
+    dash:editor dash:DetailsEditor ;
+    sh:group :GeneralGroup
+  ] ;
+  sh:property [
+    sh:path dct:issued ;
+    sh:name "Issued date" ;
+    sh:description "The formal date when the dataset was officially published or released." ;
+    sh:datatype xsd:date ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:order 5 ;
+    dash:editor dash:DatePickerEditor ;
+    sh:group :GeneralGroup
+  ] ;
+  sh:property [
+    sh:path dcat:version ;
+    sh:name "Version" ;
+    sh:description "The specific version identifier of the dataset (e.g., '2.0', '2.2')." ;
+    sh:datatype xsd:string ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:order 6 ;
+    dash:editor dash:TextFieldEditor ;
+    sh:group :GeneralGroup
+  ] ;
+  sh:property [
+    sh:path dct:license ;
+    sh:name "License and rights" ;
+    sh:description "A web link (IRI) pointing to the official legal document defining the usage rights and restrictions of the dataset." ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1 ;
+    sh:order 7 ;
+    dash:editor dash:URIEditor ;
+    sh:group :GeneralGroup
+  ] ;
+  sh:property [
+    sh:path dcat:keyword ;
+    sh:name "Keyword" ;
+    sh:description "Key terms or tags (e.g., 'ICU', 'EHR', 'Vitals') that categorize the data and enhance its discoverability." ;
+    sh:datatype xsd:string ;
+    sh:minCount 1 ;
+    sh:order 8 ;
+    dash:editor dash:TextFieldEditor ;
+    sh:group :GeneralGroup
+  ] .
+
+foaf:Organization
+  a sh:NodeShape ;
+  sh:targetClass foaf:Organization ;
+  sh:property [
+    sh:path foaf:name ;
+    sh:name "Organization name" ;
+    sh:description "The official legal name of the organization or institution." ;
+    sh:datatype xsd:string ;
+    sh:minCount 1 ;
+    sh:order 1 ;
+    dash:editor dash:TextFieldEditor
+  ] ;
+  sh:property [
+    sh:path foaf:homepage ;
+    sh:name "Organization URL homepage" ;
+    sh:description "The web address (IRI) directing to the organization's official website." ;
+    sh:nodeKind sh:IRI ;
+    sh:order 2 ;
+    dash:editor dash:URIEditor
+  ] .
+
+dcat:Distribution
+  a sh:NodeShape ;
+  sh:targetClass dcat:Distribution ;
+  sh:property [
+    sh:path dcat:accessURL ;
+    sh:name "Access URL" ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1 ;
+    sh:order 1 ;
+    dash:editor dash:URIEditor
+  ] ;
+  sh:property [
+    sh:path dct:format ;
+    sh:name "Format of the dataset" ;
+    sh:datatype xsd:string ;
+    sh:order 2 ;
+    dash:editor dash:TextFieldEditor
+  ] .
+
+# ── Preserved: SHACL/RDF Contour does not model. Round-tripped as-is. ──
+<http://www.w3.org/ns/dcat#Dataset> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Class> .
+<http://xmlns.com/foaf/0.1/Organization> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Class> .

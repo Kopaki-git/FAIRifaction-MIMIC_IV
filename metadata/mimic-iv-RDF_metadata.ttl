@@ -1,0 +1,28 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+<https://example.org/dataset/mimic-iv-a-freely-accessible-electronic-health-record-datase> a dcat:Dataset ;
+    dct:identifier "doi:10.13026/6zh1-qc14" ;
+    dcat:theme <http://id.nlm.nih.gov/mesh/D007362> ;
+    dcat:distribution <https://physionet.org/content/mimiciv/2.2/> ;
+    dct:title "MIMIC-IV, a freely accessible electronic health record dataset" ;
+    dct:description "MIMIC (Medical Information Mart for Intensive Care) is a large, freely-available database comprising deidentified health-related data from patients who were admitted to the critical care units of the Beth Israel Deaconess Medical Center. This site contains information from the various versions of MIMIC released over the year. MIMIC-IV contains data from 2008-2019. The data was collected from Metavision bedside monitors" ;
+    dct:creator [
+        a foaf:Organization ;
+        foaf:name "MIT Laboratory for Computational Physiology" ;
+        foaf:homepage <https://mimic.mit.edu>
+    ] ;
+    dct:publisher [
+        a foaf:Organization ;
+        foaf:name "PhysioNet" ;
+        foaf:homepage <https://physionet.org>
+    ] ;
+    dct:issued "2023-01-06"^^xsd:date ;
+    dcat:version "2.2" ;
+    dct:license <https://physionet.org/about/licenses/physionet-credentialed-health-data-license-150/> ;
+    dcat:keyword "ICU" .
+
+<https://physionet.org/content/mimiciv/2.2/> dcat:accessURL <https://physionet.org/content/mimiciv/2.2/> ;
+    dct:format "CSV" .
