@@ -20,6 +20,33 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_SOURCE = ROOT / "data" / "derived" / "mimic_icu_vitals_4h"
 DEFAULT_OUTPUT = ROOT / "rdf" / "mimic_icu_vitals_4h.ttl"
 
+# =============================================================================
+# Configuration (from here down to ICD_CODE): every decision lives here as
+# data, not inside the logic below.
+#
+# - Decisions (W3ID year, terminology mappings) change for different reasons
+#   than mechanics (how triples are built). Keeping them here means a decision
+#   can be reviewed or changed without touching any function.
+# - Each URI is defined once as a constant. A typo inside a repeated string
+#   silently produces wrong RDF; a typo in a constant name fails immediately
+#   with NameError. DATA and the extension URLs are built from W3ID_BASE so
+#   they cannot drift apart.
+# - Mapping tables are dictionaries shaped like the tables in
+#   docs/semantic_model_mapping.md (section cited above each), so they can be
+#   checked against the model row by row. Their keys are the complete list of
+#   approved source values; lookup() rejects anything else. None means
+#   "considered and deliberately not mapped", unlike a missing key, which
+#   means "never considered".
+# - FHIR and DATA are rdflib Namespaces because they produce graph nodes
+#   (predicates and resources). Terminology systems are plain strings because
+#   FHIR stores them as uri values, written as xsd:anyURI literals, not links.
+# - TIMESTAMP, DECIMAL and ICD_CODE are the formats source values must match;
+#   the value helpers raise an error on anything else.
+# - The tables were copied by hand from the model. tests/test_rdf.py keeps its
+#   own separate copy, so a copying mistake would have to happen twice to go
+#   unnoticed.
+# =============================================================================
+
 # --- Namespaces and project identifiers (docs/rdf_serialization.md, D1, D2, D6) ---
 
 FHIR = Namespace("http://hl7.org/fhir/")
