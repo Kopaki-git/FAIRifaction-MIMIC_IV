@@ -123,7 +123,23 @@ DECIMAL = re.compile(r"^-?\d+(\.\d+)?$")
 ICD_CODE = re.compile(r"^[A-Z0-9]+$")
 
 
-# --- IRI minting (D2) ---
+# =============================================================================
+# IRI minting (D2): one function per resource kind turns source keys into
+# that resource's IRI.
+#
+# - RDF has no joins: two nodes are the same resource only if their IRIs match
+#   character for character. Rows from different tables that mention the same
+#   patient, encounter or condition connect only because they call the same
+#   function here, so these functions are where the tables get joined.
+# - IRIs are built from source keys, never from counters or random IDs, so the
+#   same input always yields the same IRI regardless of row order or run.
+# - Every IRI carries a type prefix because MIMIC reuses numbers across ID
+#   spaces, and condition and hospital-encounter IRIs share hadm_id by design.
+#   Without the prefix those resources would merge into one node.
+# - The MIMIC IDs embedded here are not where those IDs are recorded as data.
+#   Each resource also carries an explicit FHIR Identifier (model §3.1); query
+#   that, and never parse IDs out of IRIs.
+# =============================================================================
 
 def patient_iri(subject_id):
     return DATA[f"patient-{subject_id}"]
@@ -142,11 +158,32 @@ def condition_iri(hadm_id):
 
 
 def observation_iri(stay_id, charttime, itemid):
+    """Return the Observation IRI built from (stay_id, charttime, itemid).
+
+    Observation rows have no source ID, so the IRI uses this composite key,
+    which is unique across all 2,501 source rows. A collision would be silent
+    in RDF: two rows would merge into one Observation carrying two values, so
+    add_observation() stops on a duplicate IRI.
+
+    charttime is compacted ("2180-07-23 14:12:00" -> "21800723T141200")
+    because IRIs cannot contain spaces; the compact ISO form stays readable
+    and sorts chronologically.
+    """
     stamp = charttime.replace("-", "").replace(":", "").replace(" ", "T")
     return DATA[f"observation-{stay_id}-{stamp}-{itemid}"]
 
 
 def location_iri(careunit):
+    """Return the Location IRI derived from the verbatim care-unit label.
+
+    Care units have no source ID, only a label. The slug (lowercase, with each
+    run of non-alphanumeric characters replaced by "-") is derived from the
+    label by rule rather than from hand-picked short names, so there is no
+    extra mapping table to review. Trade-offs: a renamed label in a later MIMIC
+    release changes the IRI, and two labels differing only in punctuation would
+    collapse into one IRI. The generator does not check for that; the test
+    requiring exactly 9 Locations would catch it.
+    """
     slug = re.sub(r"[^a-z0-9]+", "-", careunit.lower()).strip("-")
     return DATA[f"location-{slug}"]
 
