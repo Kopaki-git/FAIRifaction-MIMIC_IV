@@ -267,9 +267,20 @@ def canonical_icd(code, version):
     return code if len(code) <= split else f"{code[:split]}.{code[split:]}"
 
 
-# --- Datatype builders (all nested elements are blank nodes, D3) ---
+# =============================================================================
+# Datatype builders: FHIR's reusable structures (Coding, CodeableConcept,
+# Identifier, Period, Extension). Each builder creates a blank node (D3),
+# attaches its fields and returns the node; the caller chooses the predicate
+# that attaches it, because the same structure appears under different parents.
+# =============================================================================
 
 def coding(g, system, code, display=None):
+    """Return a Coding blank node with system, code and optional display.
+
+    Display is written only when given. The model specifies it only for the
+    MIMIC item label and the ICD long title, so no other Coding gets display
+    text that no source provided.
+    """
     node = BNode()
     g.add((node, FHIR["Coding.system"], uri(system)))
     g.add((node, FHIR["Coding.code"], Literal(code)))
@@ -279,6 +290,14 @@ def coding(g, system, code, display=None):
 
 
 def codeable_concept(g, codings):
+    """Return a CodeableConcept blank node with one Coding per (system, code[, display]) tuple.
+
+    All Codings in one CodeableConcept express the same concept in different
+    code systems (e.g. MICU as HL7 "ICU" plus the more specific SNOMED code).
+    Separate concepts need separate CodeableConcepts (e.g. Neuro SICU's "ICU"
+    and "NS"), which is why the mapping tables nest codings as lists of lists.
+    Coding order is not recorded, because the simplified dialect omits fhir:index (D7).
+    """
     node = BNode()
     for c in codings:
         g.add((node, FHIR["CodeableConcept.coding"], coding(g, *c)))
@@ -286,6 +305,11 @@ def codeable_concept(g, codings):
 
 
 def identifier(g, system, value):
+    """Return an Identifier blank node pairing a source ID with its system.
+
+    This is where MIMIC IDs are recorded as data (model §3.1); IRIs only use
+    them as part of a name.
+    """
     node = BNode()
     g.add((node, FHIR["Identifier.system"], uri(system)))
     g.add((node, FHIR["Identifier.value"], Literal(value)))
@@ -293,6 +317,11 @@ def identifier(g, system, value):
 
 
 def period(g, start, end):
+    """Return a Period blank node with both start and end.
+
+    Every encounter here is finished, so both ends must exist. A missing end
+    makes date_time() raise an error rather than producing an open-ended period.
+    """
     node = BNode()
     g.add((node, FHIR["Period.start"], date_time(start)))
     g.add((node, FHIR["Period.end"], date_time(end)))
@@ -300,6 +329,12 @@ def period(g, start, end):
 
 
 def extension(g, url, predicate, value):
+    """Return an Extension blank node with its url and one value.
+
+    FHIR builds the value's type into the property name (valueBoolean,
+    valueString), so the caller passes that name explicitly rather than having
+    it inferred from the Python value.
+    """
     node = BNode()
     g.add((node, FHIR["Extension.url"], uri(url)))
     g.add((node, FHIR[predicate], value))
