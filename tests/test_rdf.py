@@ -368,6 +368,15 @@ def test_scope(g):
     assert all(isinstance(s, (URIRef, BNode)) for s in g.subjects())
 
 
+def test_uri_values_are_plain_strings(g):
+    # R4 FHIR-RDF writes uri values untyped, so SPARQL can match them with a plain string.
+    uri_predicates = ["Coding.system", "Identifier.system", "Quantity.system", "Extension.url"]
+    for p in uri_predicates:
+        values = list(g.objects(None, F[p]))
+        assert values and all(isinstance(v, Literal) and v.datatype is None for v in values), p
+    assert (None, F["Coding.system"], Literal(LOINC)) in g
+
+
 # --- 7. Reproducibility ---
 
 def canonical_form(path):

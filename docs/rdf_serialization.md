@@ -118,7 +118,7 @@ The output is **simplified FHIR-predicate RDF**:
 | FHIR type | RDF literal |
 |---|---|
 | `code`, `string`, identifier values | plain string, e.g. `"final"`, `"220045"`, `"10000032"` |
-| `uri` (`Coding.system`, `Identifier.system`, `Quantity.system`, `Extension.url`) | `xsd:anyURI` literal |
+| `uri` (`Coding.system`, `Identifier.system`, `Quantity.system`, `Extension.url`) | plain string, as in R4 FHIR-RDF (R5 would type it `xsd:anyURI`); query with e.g. `"http://loinc.org"` |
 | `decimal` (`valuenum`) | `xsd:decimal`, source lexical form kept (e.g. `91.0`) |
 | `boolean` (warning) | `xsd:boolean` |
 | `dateTime` | `xsd:dateTime`; source `YYYY-MM-DD HH:MM:SS` with only the space replaced by `T` |

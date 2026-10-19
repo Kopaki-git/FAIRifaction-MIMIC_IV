@@ -39,7 +39,8 @@ DEFAULT_OUTPUT = ROOT / "rdf" / "mimic_icu_vitals_4h.ttl"
 #   means "never considered".
 # - FHIR and DATA are rdflib Namespaces because they produce graph nodes
 #   (predicates and resources). Terminology systems are plain strings because
-#   FHIR stores them as uri values, written as xsd:anyURI literals, not links.
+#   FHIR fields such as Coding.system hold URI values, not links; they are
+#   written as plain string literals, as in R4 FHIR-RDF (see uri()).
 # - TIMESTAMP, DECIMAL and ICD_CODE are the formats source values must match;
 #   the value helpers raise an error on anything else.
 # - The tables were copied by hand from the model. tests/test_rdf.py keeps its
@@ -188,32 +189,76 @@ def location_iri(careunit):
     return DATA[f"location-{slug}"]
 
 
-# --- Literal helpers ---
+# =============================================================================
+# Value helpers: how source values become RDF literals. Each helper checks the
+# format its conversion relies on and raises ValueError rather than writing a
+# value that quietly differs from the source.
+# =============================================================================
 
 def lookup(table, key, field):
+    """Return table[key], or raise ValueError naming the field and value.
+
+    Used for both mapping tables and integrity lookups. Unlike a bare
+    table[key] (KeyError: 'X'), the message says which field failed and that
+    the value is outside the approved mapping, pointing the reader back to the
+    model rather than the code.
+    """
     if key not in table:
         raise ValueError(f"{field} value {key!r} is outside the approved mapping")
     return table[key]
 
 
 def uri(value):
-    return Literal(value, datatype=XSD.anyURI)
+    """Return a FHIR uri value (e.g. Coding.system) as a plain string literal.
+
+    The value is text that happens to be a URI, not a link, so it is not an
+    IRI node. It is untyped because R4 FHIR-RDF writes uri values as plain
+    strings (R5 would type them xsd:anyURI), which also lets SPARQL match them
+    with a plain string such as "http://loinc.org". Kept as a function so this
+    choice lives in one place.
+    """
+    return Literal(value)
 
 
 def date_time(value):
+    """Return a source timestamp as an xsd:dateTime literal, text preserved.
+
+    The conversion only replaces the space with "T", which is correct only for
+    the exact shape YYYY-MM-DD HH:MM:SS, so that shape is checked first. The
+    value is not parsed into a datetime and reformatted, so no characters can
+    change, and no timezone is added because MIMIC provides none (D7).
+    """
     if not TIMESTAMP.match(value):
         raise ValueError(f"unexpected timestamp format: {value!r}")
     return Literal(value.replace(" ", "T"), datatype=XSD.dateTime, normalize=False)
 
 
 def decimal(value):
+    """Return a source number as an xsd:decimal literal, text preserved.
+
+    FHIR treats decimal precision as meaningful ("91.0" is not "91"), so the
+    exact source text is kept: xsd:decimal rather than a float, and
+    normalize=False so RDFLib does not rewrite it (e.g. "080.50" -> "80.50").
+    Empty, "nan" and scientific-notation values are rejected.
+    """
     if not DECIMAL.match(value):
         raise ValueError(f"unexpected numeric value: {value!r}")
     return Literal(value, datatype=XSD.decimal, normalize=False)
 
 
 def canonical_icd(code, version):
-    """Insert the standard ICD-9-CM / ICD-10-CM decimal point without otherwise changing the code."""
+    """Insert the standard ICD-9-CM / ICD-10-CM decimal point without otherwise changing the code.
+
+    The dot goes after three characters, except ICD-9-CM E-codes (external
+    causes), which take four: E8790 -> E879.0. In ICD-10-CM "E" means
+    endocrine and follows the three-character rule (E1165 -> E11.65), so the
+    version decides the rule, not the letter alone.
+
+    Guards: the code must be undotted letters and digits, and the version must
+    be approved. lookup() is called only for its error, so the function is safe
+    even when a caller (such as a test) has not checked the version first.
+    It formats codes only and does not check that a code exists in an ICD release.
+    """
     if not ICD_CODE.match(code):
         raise ValueError(f"unexpected ICD code: {code!r}")
     lookup(ICD_SYSTEMS, version, "icd_version")
