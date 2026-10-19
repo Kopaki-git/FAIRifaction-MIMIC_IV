@@ -488,14 +488,30 @@ def add_observation(g, row):
     g.add((iri, FHIR["Observation.encounter"], icu_encounter_iri(row["stay_id"])))
 
 
-# --- Pipeline ---
+# =============================================================================
+# Pipeline: the only code that reads files and matches rows across tables.
+# build_graph() checks that the tables agree before building anything, and
+# main() writes the output only after a successful build, so bad source data
+# stops the run without leaving a partial or overwritten Turtle file.
+# =============================================================================
 
 def read_table(source, name):
+    """Return a table's rows as dicts of exact source strings.
+
+    csv is used rather than pandas so no value is type-converted (IDs stay
+    text, "91.0" stays "91.0"). Encoding and newline handling are explicit so
+    every machine reads the file identically.
+    """
     with open(source / f"{name}.csv", newline="", encoding="utf-8") as f:
         return list(csv.DictReader(f))
 
 
 def unique_index(rows, key, table):
+    """Return rows indexed by key, raising ValueError on a duplicate key.
+
+    A plain dict comprehension would silently keep only the last duplicate,
+    dropping a resource from the RDF without warning.
+    """
     index = {}
     for row in rows:
         if row[key] in index:
@@ -505,12 +521,28 @@ def unique_index(rows, key, table):
 
 
 def check_link(row, parent, fields, context):
+    """Raise ValueError if a row's copies of its parent's keys disagree with the parent.
+
+    The tables repeat parent keys, and the RDF uses different copies in
+    different places (e.g. Observation.subject from the observation row,
+    Observation.encounter via the stay). Taking the parent's value instead would
+    quietly repair the source; checking reports the disagreement.
+    """
     for field in fields:
         if row[field] != parent[field]:
             raise ValueError(f"{context}: {field} {row[field]} disagrees with parent {parent[field]}")
 
 
 def build_graph(source=DEFAULT_SOURCE):
+    """Read the source tables, check they agree, and return the RDF graph.
+
+    All checks run before any triple is added. They cover only what the
+    builders rely on: unique keys, matching parent links, exactly one seq_num 1
+    diagnosis per admission, and approved care units. Extraction properties
+    such as the four-hour window are validated in the notebook. Sorting makes
+    the build order identical on every run but does not change the graph.
+    Kept separate from main() so tests can build a graph in memory.
+    """
     source = Path(source)
     admissions = unique_index(read_table(source, "hospital_admissions"), "hadm_id", "hospital_admissions")
     diagnoses = unique_index(read_table(source, "first_ranked_diagnoses"), "hadm_id", "first_ranked_diagnoses")
@@ -550,6 +582,9 @@ def build_graph(source=DEFAULT_SOURCE):
         add_hospital_encounter(g, admissions[hadm_id], diagnoses[hadm_id])
         add_condition(g, diagnoses[hadm_id])
     for stay_id in sorted(stays):
+        # Sorting has no effect on the graph: RDF stores the intervals as an unordered
+        # set, and each one's period carries its own times. It only shows that the
+        # care-unit history is chronological (it would matter if fhir:index were used).
         stay_intervals = sorted(intervals_by_stay.get(stay_id, []), key=lambda r: r["intime"])
         add_icu_encounter(g, stays[stay_id], stay_intervals)
     for obs in observations:
@@ -558,6 +593,7 @@ def build_graph(source=DEFAULT_SOURCE):
 
 
 def main():
+    """Command-line entry point: build the graph, then write it as Turtle."""
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--source", type=Path, default=DEFAULT_SOURCE, help="canonical source table directory")
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT, help="Turtle output path")
