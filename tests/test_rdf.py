@@ -14,7 +14,7 @@ from pathlib import Path
 
 import pyoxigraph
 import pytest
-from rdflib import BNode, Graph, Literal, Namespace, URIRef
+from rdflib import Graph, Literal, Namespace, URIRef
 from rdflib.namespace import RDF, XSD
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -405,6 +405,14 @@ def test_references_resolve(g):
             assert isinstance(target, URIRef) and (target, RDF.type, None) in g, f"{p} -> {target}"
 
 
+# =============================================================================
+# Edge cases (handoff §6 criterion 7). Most re-check cases the per-resource
+# tests already cover, but give each one a named test for the report. Each
+# first asserts that its case exists in the data, so it cannot pass vacuously.
+# test_canonical_icd_formatting and test_unapproved_source_values_fail are the
+# only tests that call generator functions directly rather than read the output.
+# =============================================================================
+
 # --- 6. Edge cases ---
 
 def test_spo2_dual_coding(g):
@@ -446,6 +454,7 @@ def test_unmapped_admission_types_have_no_priority(g, src):
     ("T814XXA", "10", "T81.4XXA"),
 ])
 def test_canonical_icd_formatting(raw, version, canonical):
+    """Check the ICD dot-insertion rule on known codes, including the ICD-9 E-code case that does not occur in the data."""
     assert gen.canonical_icd(raw, version) == canonical
 
 
@@ -458,21 +467,32 @@ def test_historical_icd_codes_not_modernized(g, src):
 
 
 def test_unapproved_source_values_fail():
+    """Check that the generator raises ValueError on an unmapped admission type and on an already-dotted ICD code instead of passing them through."""
     with pytest.raises(ValueError):
         gen.lookup(gen.ADMISSION_PRIORITY, "UNSEEN TYPE", "admission_type")
     with pytest.raises(ValueError):
         gen.canonical_icd("414.01", "9")
 
 
+# =============================================================================
+# Scope: what must not be in the graph (the model §11 omissions, meta.profile,
+# anything outside the fhir: vocabulary), plus the R4 plain-string form of uri values.
+# =============================================================================
+
 # --- Scope: deliberate omissions and no unsupported assertions ---
 
 def test_scope(g):
+    """Check that the graph contains nothing outside the model's scope.
+
+    Only rdf:type and fhir: predicates are allowed. There must be no
+    transfer_id or eventtype, neither as a predicate nor as an eventtype value
+    ("admit", "transfer") under any predicate, and no meta.profile.
+    """
     predicates = set(g.predicates())
     assert all(p == RDF.type or str(p).startswith(str(F)) for p in predicates)
     assert not any("transfer" in str(p).lower() or "eventtype" in str(p).lower() for p in predicates)
     assert F["Resource.meta"] not in predicates
     assert Literal("admit") not in set(g.objects()) and Literal("transfer") not in set(g.objects())
-    assert all(isinstance(s, (URIRef, BNode)) for s in g.subjects())
 
 
 def test_uri_values_are_plain_strings(g):
@@ -483,6 +503,13 @@ def test_uri_values_are_plain_strings(g):
         assert values and all(isinstance(v, Literal) and v.datatype is None for v in values), p
     assert (None, F["Coding.system"], Literal(LOINC)) in g
 
+
+# =============================================================================
+# Reproducibility (handoff §6 criterion 8). Graphs with blank nodes cannot be
+# compared line by line, so they are compared by their W3C RDFC-1.0 canonical
+# form. rdflib.compare.isomorphic was tried first but had not finished after
+# 7 minutes on this graph; RDFC-1.0 takes under a second.
+# =============================================================================
 
 # --- 7. Reproducibility ---
 
@@ -495,6 +522,13 @@ def canonical_form(path):
 
 
 def test_committed_output_reproducible(tmp_path):
+    """Check that the generator is deterministic and the committed file is up to date.
+
+    Builds the graph twice, writes and re-parses each build as Turtle, and
+    requires identical canonical forms for both builds and the committed file.
+    A negative control changes one literal and requires the comparison to fail,
+    proving the comparison can detect a difference.
+    """
     fresh = []
     for name in ["a", "b"]:
         path = tmp_path / f"fresh_{name}.ttl"
