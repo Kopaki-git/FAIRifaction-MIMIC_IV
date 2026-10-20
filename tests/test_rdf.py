@@ -63,15 +63,27 @@ EXPECTED_ICD_SYSTEMS = {
 }
 
 
-# --- Fixtures and helpers ---
+# =============================================================================
+# Fixtures and helpers. Independence rule: nothing here takes expected values
+# from the generator. src reads the CSVs itself instead of calling
+# gen.read_table(), and iso() restates the timestamp rule instead of calling
+# gen.date_time(), so a generator bug cannot be copied into what the tests expect.
+# =============================================================================
 
 @pytest.fixture(scope="module")
 def g():
+    """Return the committed Turtle graph, parsed once and shared, so tests must only read it."""
     return Graph().parse(TTL, format="turtle")
 
 
 @pytest.fixture(scope="module")
 def src():
+    """Return the five source tables as lists of dicts of exact strings.
+
+    Module-scoped: read once and shared by every test in this file, so tests
+    must only read these rows and never modify them. One test changing a row
+    would silently change the source data that every later test sees.
+    """
     def read(name):
         with open(SOURCE / f"{name}.csv", newline="", encoding="utf-8") as f:
             return list(csv.DictReader(f))
@@ -80,6 +92,12 @@ def src():
 
 
 def one(g, s, p):
+    """Return the single object of (s, p), failing the test if there are none or several.
+
+    Unlike rdflib's g.value(), which silently returns an arbitrary value when
+    there are several, this makes every field a test reads also a check that
+    the value is neither missing nor duplicated.
+    """
     objects = list(g.objects(s, p))
     assert len(objects) == 1, f"{s} {p}: expected exactly one value, found {len(objects)}"
     return objects[0]
@@ -287,6 +305,9 @@ def test_locations_match_frozen_mapping(g, src):
         assert one(g, loc, F["Location.mode"]) == Literal("kind")
         assert {codings(g, t) for t in g.objects(loc, F["Location.type"])} == EXPECTED_LOCATION_TYPES[name]
         assert len(list(g.objects(loc, F["Location.type"]))) == len(EXPECTED_LOCATION_TYPES[name])
+    # Documented example IRI (docs/rdf_serialization.md, D2), written out rather than computed.
+    assert one(g, DATA["location-medical-intensive-care-unit-micu"], F["Location.name"]) == Literal(
+        "Medical Intensive Care Unit (MICU)")
 
 
 def test_references_resolve(g):
