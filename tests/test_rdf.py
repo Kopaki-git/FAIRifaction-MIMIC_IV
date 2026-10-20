@@ -133,9 +133,24 @@ def typed(g, rdf_type):
     return set(g.subjects(RDF.type, rdf_type))
 
 
+# =============================================================================
+# Parsing and counts (handoff §6): the broadest checks. Counts are fixed numbers
+# from the dataset invariants in AGENTS.md, not computed from the CSVs, so they
+# also catch the source drifting from what was documented. Counts catch
+# resources that are missing, extra or merged; whether each resource is
+# correct is left to the per-resource tests below.
+# =============================================================================
+
 # --- 1. Parsing ---
 
 def test_parses_with_independent_parser(g):
+    """Parse the committed Turtle with Oxigraph and compare its triple count with RDFLib's.
+
+    RDFLib both wrote the file and (in the g fixture) read it back, so a quirk
+    in its writer could be accepted by its own reader. Oxigraph is a separate,
+    strict implementation. If both parse the file and agree on a non-zero count,
+    it is standard Turtle and neither parser skipped statements.
+    """
     triples = list(pyoxigraph.parse(path=str(TTL), format=pyoxigraph.RdfFormat.TURTLE))
     assert len(triples) == len(g) > 0
 
@@ -143,6 +158,15 @@ def test_parses_with_independent_parser(g):
 # --- 2. Resource and interval counts ---
 
 def test_resource_counts(g):
+    """Count each resource kind against the dataset invariants.
+
+    Resources are counted as distinct typed subjects, so two rows merged into
+    one IRI would lower the count. Encounters are counted per class (ACUTE for
+    ICU stays, IMP for hospital admissions) because both share fhir:Encounter.
+    Care-unit intervals are blank nodes, so they are counted as objects of
+    Encounter.location. Misclassifications that offset each other would cancel
+    out here; the per-resource tests check each encounter's class individually.
+    """
     assert len(typed(g, F.Observation)) == 2501
     assert len(typed(g, F.Patient)) == 94
     assert len(typed(g, F.Condition)) == 121
@@ -153,6 +177,14 @@ def test_resource_counts(g):
 
 
 def test_loinc_counts(g):
+    """Count LOINC codings across all Observations against the expected totals per code.
+
+    Heart rate and respiratory rate carry one LOINC code each, and every SpO2
+    row carries both 2708-6 and 59408-5 (dual coding). Codings are collected
+    per Observation as a set, so a Coding duplicated within one Observation
+    would be counted once. This is a known, accepted gap; the per-resource tests
+    compare sets too.
+    """
     loinc = Counter()
     for obs in typed(g, F.Observation):
         for system, code in codings(g, one(g, obs, F["Observation.code"])):
