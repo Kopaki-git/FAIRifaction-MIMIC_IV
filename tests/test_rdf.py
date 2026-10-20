@@ -482,11 +482,12 @@ def test_unapproved_source_values_fail():
 # --- Scope: deliberate omissions and no unsupported assertions ---
 
 def test_scope(g):
-    """Check that the graph contains nothing outside the model's scope.
+    """Check selected scope constraints and the model's deliberate omissions.
 
     Only rdf:type and fhir: predicates are allowed. There must be no
     transfer_id or eventtype, neither as a predicate nor as an eventtype value
-    ("admit", "transfer") under any predicate, and no meta.profile.
+    ("admit", "transfer") under any predicate, and no meta.profile. This is not
+    an exhaustive comparison of the graph against the model.
     """
     predicates = set(g.predicates())
     assert all(p == RDF.type or str(p).startswith(str(F)) for p in predicates)

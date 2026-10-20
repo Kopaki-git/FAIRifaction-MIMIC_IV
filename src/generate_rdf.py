@@ -128,10 +128,11 @@ ICD_CODE = re.compile(r"^[A-Z0-9]+$")
 # IRI minting (D2): one function per resource kind turns source keys into
 # that resource's IRI.
 #
-# - RDF has no joins: two nodes are the same resource only if their IRIs match
-#   character for character. Rows from different tables that mention the same
-#   patient, encounter or condition connect only because they call the same
-#   function here, so these functions are where the tables get joined.
+# - RDF has no foreign keys: two nodes are the same resource only if their
+#   IRIs match character for character. SPARQL joins by matching those shared
+#   IRIs, but nothing links CSV rows from different tables automatically. Rows
+#   that mention the same patient, encounter or condition connect only because
+#   they call the same function here.
 # - IRIs are built from source keys, never from counters or random IDs, so the
 #   same input always yields the same IRI regardless of row order or run.
 # - Every IRI carries a type prefix because MIMIC reuses numbers across ID
@@ -536,12 +537,14 @@ def check_link(row, parent, fields, context):
 def build_graph(source=DEFAULT_SOURCE):
     """Read the source tables, check they agree, and return the RDF graph.
 
-    All checks run before any triple is added. They cover only what the
-    builders rely on: unique keys, matching parent links, exactly one seq_num 1
-    diagnosis per admission, and approved care units. Extraction properties
-    such as the four-hour window are validated in the notebook. Sorting makes
-    the build order identical on every run but does not change the graph.
-    Kept separate from main() so tests can build a graph in memory.
+    Cross-table checks run before any triple is added: unique keys, matching
+    parent links, exactly one seq_num 1 diagnosis per admission, and approved
+    care units. Row-level checks run while each resource is built (value
+    formats, approved codes, Observation label and unit, duplicate Observation
+    IRIs). Either kind stops the run before main() writes anything. Extraction
+    properties such as the four-hour window are validated in the notebook.
+    Sorting makes the build order identical on every run but does not change
+    the graph. Kept separate from main() so tests can build a graph in memory.
     """
     source = Path(source)
     admissions = unique_index(read_table(source, "hospital_admissions"), "hadm_id", "hospital_admissions")
