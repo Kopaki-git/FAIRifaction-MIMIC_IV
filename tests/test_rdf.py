@@ -148,7 +148,7 @@ def test_parses_with_independent_parser(g):
 
     RDFLib both wrote the file and (in the g fixture) read it back, so a quirk
     in its writer could be accepted by its own reader. Oxigraph is a separate,
-    strict implementation. If both parse the file and agree on a non-zero count,
+    strict, Rust-based implementation. If both parse the file and agree on a non-zero count,
     it is standard Turtle and neither parser skipped statements.
     """
     triples = list(pyoxigraph.parse(path=str(TTL), format=pyoxigraph.RdfFormat.TURTLE))
@@ -193,9 +193,24 @@ def test_loinc_counts(g):
     assert loinc == {"8867-4": 859, "9279-1": 860, "2708-6": 782, "59408-5": 782}
 
 
+# =============================================================================
+# Per-resource tests (handoff §6 criteria 3-5). Each test loops over one source
+# table, rebuilds the expected IRI for each row by hand, reads every field
+# through one() and compares it with the row. With the counts above, this gives
+# an exact one-to-one match between source rows and resources. A test stops at
+# its first failing row, so only one failure is shown at a time.
+# =============================================================================
+
 # --- 3-5. References, source fidelity and codings, per resource kind ---
 
 def test_observations_match_source(g, src):
+    """Check every Observation against its source row.
+
+    Covers status, category, subject and ICU encounter references, the typed
+    charttime, the MIMIC and LOINC codes with the MIMIC display, the quantity
+    (decimal type, numeric value, source unit, UCUM system and code) and the
+    warning extension as the only extension.
+    """
     rows = src["observations"]
     assert len(rows) == 2501
     for row in rows:
@@ -230,6 +245,12 @@ def test_observations_match_source(g, src):
 
 
 def test_values_keep_source_lexical_form(src):
+    """Check that every value and charttime keeps its exact source text in the file.
+
+    Numerically "91.0" equals "91", but FHIR treats them as different precisions.
+    RDFLib and pyoxigraph.Store rewrite such values when loading, so this reads
+    the file with pyoxigraph's streaming parser, which keeps the text as written.
+    """
     # The pyoxigraph parser (unlike rdflib and pyoxigraph.Store) keeps literals' lexical form,
     # so this checks the serialized text itself.
     quantity, value, time = {}, {}, {}
@@ -250,6 +271,12 @@ def test_values_keep_source_lexical_form(src):
 
 
 def test_icu_encounters_match_source(g, src):
+    """Check every ICU Encounter against icu_stays and its care-unit intervals.
+
+    Covers identifier, status, class ACUTE, subject, partOf the hospital
+    encounter and period, and checks that its Encounter.location entries match
+    the source intervals exactly: times, Location reference and that Location's name.
+    """
     intervals = {}
     for row in src["careunit_intervals"]:
         intervals.setdefault(row["stay_id"], set()).add(
@@ -273,6 +300,13 @@ def test_icu_encounters_match_source(g, src):
 
 
 def test_hospital_encounters_match_source(g, src):
+    """Check every Hospital Encounter against hospital_admissions.
+
+    Covers identifier, status, class IMP, subject, period, the absence of
+    partOf, the verbatim admission_type as the only extension, and the diagnosis
+    (condition, rank 1, use billing). Priority must match the mapping exactly;
+    for the two unmapped types it must be absent, so an invented priority fails.
+    """
     for row in src["hospital_admissions"]:
         enc = DATA[f"hospital-encounter-{row['hadm_id']}"]
         assert (enc, RDF.type, F.Encounter) in g
@@ -299,6 +333,13 @@ def test_hospital_encounters_match_source(g, src):
 
 
 def test_conditions_match_source(g, src):
+    """Check every Condition against first_ranked_diagnoses.
+
+    Covers subject, encounter, category and the two ICD codings: the raw source
+    code with long_title as display, and the canonical code. The canonical code
+    is checked structurally (the raw code with only a dot inserted), not
+    against an ICD release.
+    """
     for row in src["first_ranked_diagnoses"]:
         cond = DATA[f"condition-{row['hadm_id']}"]
         assert (cond, RDF.type, F.Condition) in g
@@ -322,6 +363,7 @@ def test_conditions_match_source(g, src):
 
 
 def test_patients_match_source(g, src):
+    """Check that each of the 94 patients has its MIMIC identifier and system."""
     subject_ids = {row["subject_id"] for row in src["hospital_admissions"]}
     assert len(subject_ids) == 94
     for subject_id in subject_ids:
@@ -330,6 +372,13 @@ def test_patients_match_source(g, src):
 
 
 def test_locations_match_frozen_mapping(g, src):
+    """Check the care-unit Locations against the frozen mapping (model §9).
+
+    The source must contain exactly the nine mapped care units, and each
+    Location must have mode "kind" and exactly the expected Location.type
+    groupings. The documented example IRI is pinned as well, because the ICU
+    encounter test computes Location IRIs with the generator's own location_iri().
+    """
     careunits = {row["careunit"] for row in src["careunit_intervals"]}
     assert careunits == set(EXPECTED_LOCATION_TYPES)
     for loc in typed(g, F.Location):
@@ -343,6 +392,11 @@ def test_locations_match_frozen_mapping(g, src):
 
 
 def test_references_resolve(g):
+    """Check that every reference points at an IRI that is a typed resource in the graph.
+
+    It confirms that the targets exist, not that they are the right kind of
+    resource; the per-resource tests above check that.
+    """
     reference_predicates = [
         "Observation.subject", "Observation.encounter", "Encounter.subject", "Encounter.partOf",
         "Encounter.location.location", "Encounter.diagnosis.condition", "Condition.subject", "Condition.encounter"]
