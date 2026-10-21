@@ -2,11 +2,19 @@
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
 
-<https://example.org/dataset/mimic-iv-a-freely-accessible-electronic-health-record-datase> a dcat:Dataset ;
+<https://w3id.org/FAIR-course-UT/2026/group04/dataset/mimic-iv> a dcat:Dataset ;
     dct:identifier "doi:10.13026/6zh1-qc14" ;
     dcat:theme <http://id.nlm.nih.gov/mesh/D007362> ;
-    dcat:distribution <https://physionet.org/content/mimiciv/2.2/> ;
+    dcat:distribution <https://physionet.org/content/mimiciv/2.2/>, [
+        a dcat:Distribution ;
+        dct:title "MIMIC-IV ICU vitals (4h), FHIR-based RDF" ;
+        dcat:accessURL <https://w3id.org/FAIR-course-UT/2026/group04/dataset/mimic-iv/rdf> ;
+        dct:format "Turtle" ;
+        dcat:downloadURL <https://raw.githubusercontent.com/Kopaki-git/FAIRifaction-MIMIC_IV/refs/heads/main/rdf/mimic_icu_vitals_4h.ttl> ;
+        dcat:mediaType <https://www.iana.org/assignments/media-types/text/turtle>
+    ] ;
     dct:title "MIMIC-IV, a freely accessible electronic health record dataset" ;
     dct:description "MIMIC (Medical Information Mart for Intensive Care) is a large, freely-available database comprising deidentified health-related data from patients who were admitted to the critical care units of the Beth Israel Deaconess Medical Center. This site contains information from the various versions of MIMIC released over the year. MIMIC-IV contains data from 2008-2019. The data was collected from Metavision bedside monitors" ;
     dct:creator [
@@ -22,7 +30,13 @@
     dct:issued "2023-01-06"^^xsd:date ;
     dcat:version "2.2" ;
     dct:license <https://physionet.org/about/licenses/physionet-credentialed-health-data-license-150/> ;
-    dcat:keyword "ICU" .
+    dcat:keyword "ICU" ;
+    dct:source <https://doi.org/10.13026/6zh1-qc14> ;
+    prov:wasDerivedFrom <https://physionet.org/content/mimiciv/2.2/> ;
+    dct:conformsTo <http://hl7.org/fhir/R4/>, <https://w3id.org/FAIR-course-UT/2026/group04/shapes/mimic-iv> ;
+    dct:accessRights "Credentialed access: PhysioNet credentialed health data license" ;
+    dct:modified "2026-10-21"^^xsd:date ;
+    dct:language <http://id.loc.gov/vocabulary/iso639-1/en> .
 
 <https://physionet.org/content/mimiciv/2.2/> dcat:accessURL <https://physionet.org/content/mimiciv/2.2/> ;
     dct:format "CSV" .

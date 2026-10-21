@@ -6,7 +6,8 @@
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix dash: <http://datashapes.org/dash#> .
-@prefix : <http://example.org/metadata#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix : <https://w3id.org/FAIR-course-UT/2026/group04/shapes/mimic-iv#> .
 
 :GeneralGroup
   a sh:PropertyGroup ;
@@ -130,6 +131,67 @@ dcat:Dataset
     sh:order 8 ;
     dash:editor dash:TextFieldEditor ;
     sh:group :GeneralGroup
+  ] ;
+  sh:property [
+    sh:path dct:source ;
+    sh:name "Source dataset" ;
+    sh:description "The original dataset (DOI of MIMIC-IV on PhysioNet) from which this dataset is derived." ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1 ;
+    sh:order 9 ;
+    dash:editor dash:URIEditor ;
+    sh:group :GeneralGroup
+  ] ;
+  sh:property [
+    sh:path prov:wasDerivedFrom ;
+    sh:name "Derived from" ;
+    sh:description "Provenance: the upstream resource this dataset was derived from." ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1 ;
+    sh:order 10 ;
+    dash:editor dash:URIEditor ;
+    sh:group :GeneralGroup
+  ] ;
+  sh:property [
+    sh:path dct:conformsTo ;
+    sh:name "Conforms to" ;
+    sh:description "Standards and shapes the data conforms to (e.g. HL7 FHIR R4, the SHACL shapes of this project)." ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1 ;
+    sh:order 11 ;
+    dash:editor dash:URIEditor ;
+    sh:group :GeneralGroup
+  ] ;
+  sh:property [
+    sh:path dct:accessRights ;
+    sh:name "Access rights" ;
+    sh:description "Statement of who can access the data and under which conditions (e.g. PhysioNet credentialed access)." ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:order 12 ;
+    dash:editor dash:TextFieldEditor ;
+    sh:group :GeneralGroup
+  ] ;
+  sh:property [
+    sh:path dct:modified ;
+    sh:name "Modified date" ;
+    sh:description "Date of the last modification of this dataset." ;
+    sh:datatype xsd:date ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:order 13 ;
+    dash:editor dash:DatePickerEditor ;
+    sh:group :GeneralGroup
+  ] ;
+  sh:property [
+    sh:path dct:language ;
+    sh:name "Language" ;
+    sh:description "Language of the textual content, as an IRI." ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1 ;
+    sh:order 14 ;
+    dash:editor dash:URIEditor ;
+    sh:group :GeneralGroup
   ] .
 
 foaf:Organization
@@ -157,20 +219,55 @@ dcat:Distribution
   a sh:NodeShape ;
   sh:targetClass dcat:Distribution ;
   sh:property [
+    sh:path dct:title ;
+    sh:name "Title of the distribution" ;
+    sh:datatype xsd:string ;
+    sh:order 1 ;
+    dash:editor dash:TextFieldEditor
+  ] ;
+  sh:property [
     sh:path dcat:accessURL ;
     sh:name "Access URL" ;
     sh:nodeKind sh:IRI ;
     sh:minCount 1 ;
-    sh:order 1 ;
+    sh:order 2 ;
     dash:editor dash:URIEditor
   ] ;
   sh:property [
     sh:path dct:format ;
     sh:name "Format of the dataset" ;
     sh:datatype xsd:string ;
-    sh:order 2 ;
+    sh:order 3 ;
     dash:editor dash:TextFieldEditor
+  ] ;
+  sh:property [
+    sh:path dcat:downloadURL ;
+    sh:name "Download URL" ;
+    sh:description "Direct link to the downloadable file." ;
+    sh:nodeKind sh:IRI ;
+    sh:maxCount 1 ;
+    sh:order 4 ;
+    dash:editor dash:URIEditor
+  ] ;
+  sh:property [
+    sh:path dcat:mediaType ;
+    sh:name "Media type" ;
+    sh:description "IANA media type of the distribution (e.g. text/turtle)." ;
+    sh:nodeKind sh:IRI ;
+    sh:maxCount 1 ;
+    sh:order 5 ;
+    dash:editor dash:URIEditor
   ] .
+
+# Any distribution that declares a downloadURL must also have a title and a media type
+# (works for IRIs and blank nodes).
+:RdfDistributionShape
+  a sh:NodeShape ;
+  rdfs:label "Project RDF distribution" ;
+  sh:targetSubjectsOf dcat:downloadURL ;
+  sh:property [ sh:path dcat:downloadURL ; sh:minCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path dcat:mediaType ; sh:minCount 1 ; sh:nodeKind sh:IRI ] ;
+  sh:property [ sh:path dct:title ; sh:minCount 1 ; sh:datatype xsd:string ] .
 
 # ── Preserved: SHACL/RDF Contour does not model. Round-tripped as-is. ──
 <http://www.w3.org/ns/dcat#Dataset> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Class> .
