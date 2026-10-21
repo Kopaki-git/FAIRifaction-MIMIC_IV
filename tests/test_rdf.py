@@ -25,8 +25,8 @@ TTL = ROOT / "rdf" / "mimic_icu_vitals_4h.ttl"
 SOURCE = ROOT / "data" / "derived" / "mimic_icu_vitals_4h"
 
 F = Namespace("http://hl7.org/fhir/")
-DATA = Namespace("https://w3id.org/FAIR-course-UT/2026-2027/group4/data#")
-EXT_BASE = "https://w3id.org/FAIR-course-UT/2026-2027/group4/fhir/StructureDefinition/"
+DATA = Namespace("https://w3id.org/FAIR-course-UT/2026/group04/data#")
+EXT_BASE = "https://w3id.org/FAIR-course-UT/2026/group04/fhir/StructureDefinition/"
 MIMIC = "http://mimic.mit.edu/fhir/mimic/"
 HL7 = "http://terminology.hl7.org/CodeSystem/"
 LOINC = "http://loinc.org"

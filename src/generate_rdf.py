@@ -51,7 +51,7 @@ DEFAULT_OUTPUT = ROOT / "rdf" / "mimic_icu_vitals_4h.ttl"
 # --- Namespaces and project identifiers (docs/rdf_serialization.md, D1, D2, D6) ---
 
 FHIR = Namespace("http://hl7.org/fhir/")
-W3ID_BASE = "https://w3id.org/FAIR-course-UT/2026-2027/group4/"
+W3ID_BASE = "https://w3id.org/FAIR-course-UT/2026/group04/"
 DATA = Namespace(W3ID_BASE + "data#")
 
 EXT_WARNING = W3ID_BASE + "fhir/StructureDefinition/observation-mimic-warning"

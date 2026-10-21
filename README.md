@@ -110,7 +110,7 @@ As of 17 October 2026:
 - Canonical source extraction and validation: **completed**.
 - Clinical-semantic model and terminology choices: **audited and frozen**.
 - Current semantic provenance documentation: **available**, with explicit evidence limitations.
-- Identifier and namespace decisions: **resolved**; the W3ID base is adopted pending course confirmation.
+- Identifier and namespace decisions: **resolved**; the W3ID base `https://w3id.org/FAIR-course-UT/2026/group04/` is confirmed by the teacher.
 - Executable RDF transformation (Python/RDFLib) and Turtle export: **implemented**, `rdf/mimic_icu_vitals_4h.ttl`.
 - RDF acceptance checks: **implemented** in `tests/test_rdf.py`. They check syntax, source fidelity, relational integrity, mapping fidelity and reproducibility, not FHIR conformance.
 - W3ID redirect registration and publication infrastructure: **pending**.

@@ -64,7 +64,7 @@ In particular:
 
 Resolved with the user and recorded in `docs/rdf_serialization.md` (D1–D7). Do not reopen them without a demonstrated blocking problem and an explicit user decision.
 
-- **D1 W3ID base:** `https://w3id.org/FAIR-course-UT/2026-2027/group4/`, adopted pending course confirmation. Redirects are not yet registered, so the IRIs do not resolve.
+- **D1 W3ID base:** `https://w3id.org/FAIR-course-UT/2026/group04/`, confirmed by the teacher. Redirect rules for the course relay are not yet submitted, so the IRIs do not resolve.
 - **D2 Resource IRIs:** hash namespace `<base>data#`, deterministic patterns built only from source keys.
 - **D3 Nested elements:** blank nodes for all FHIR datatypes and backbone elements; IRIs only for the six resource kinds.
 - **D4–D5:** `Identifier.system` URIs and MIMIC-local CodeSystems reused from the MIMIC-FHIR IG 1.3.0 (draft).

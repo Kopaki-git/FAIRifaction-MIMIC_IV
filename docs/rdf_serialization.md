@@ -1,7 +1,7 @@
 # RDF Serialization — Identifiers, Dialect and Limitations
 
 **Status:** Implemented, first RDF iteration.  
-**Decisions recorded:** 15–17 October 2026.  
+**Decisions recorded:** 15–17 October 2026; W3ID base corrected 21 October 2026.  
 **Generator:** `src/generate_rdf.py`  
 **Output:** `rdf/mimic_icu_vitals_4h.ttl`  
 **Acceptance checks:** `tests/test_rdf.py`
@@ -29,8 +29,8 @@ The generator reads only the five canonical tables in `data/derived/mimic_icu_vi
 
 | # | Decision | Value |
 |---|---|---|
-| D1 | W3ID base | `https://w3id.org/FAIR-course-UT/2026-2027/group4/` |
-| D2 | Resource IRIs | Hash namespace `https://w3id.org/FAIR-course-UT/2026-2027/group4/data#` |
+| D1 | W3ID base | `https://w3id.org/FAIR-course-UT/2026/group04/` |
+| D2 | Resource IRIs | Hash namespace `https://w3id.org/FAIR-course-UT/2026/group04/data#` |
 | D3 | Nested FHIR elements | Blank nodes; IRIs only for the six resource kinds |
 | D4 | `Identifier.system` | Reused from MIMIC-FHIR |
 | D5 | MIMIC-local CodeSystems | Reused from MIMIC-FHIR |
@@ -39,13 +39,13 @@ The generator reads only the five canonical tables in `data/derived/mimic_icu_vi
 
 ### D1 — W3ID base
 
-The academic year is `2026-2027` and the group is `4`. The Canvas text gives `2025-2026`, which we treat as an out-of-date template, so this base is **adopted pending course confirmation**.
+The teacher confirmed this namespace for our Canvas group, Group 4. It replaces the base adopted provisionally on 15 October (`2026-2027/group4`).
 
-As of 15 October 2026, `https://w3id.org/FAIR-course-UT/` exists, but no year or group folders and no redirect rules are registered under it. The IRIs therefore **do not yet resolve**. Registering redirects is a separate workstream.
+w3id.org forwards the course namespace to the course's redirect relay, where our rules belong in `rules/FAIR-course-UT/2026/group04/`. Until our rules are submitted there, the IRIs **do not resolve**. Preparing and submitting the rules is a separate workstream.
 
 ### D2 — Resource IRI patterns
 
-Prefix `data:` = `https://w3id.org/FAIR-course-UT/2026-2027/group4/data#`. Every IRI is built only from source keys, so the same source always produces the same IRIs.
+Prefix `data:` = `https://w3id.org/FAIR-course-UT/2026/group04/data#`. Every IRI is built only from source keys, so the same source always produces the same IRIs.
 
 | Resource | Pattern | Example |
 |---|---|---|
@@ -94,8 +94,8 @@ The standard codings are unchanged from the model (LOINC, UCUM, HL7, SNOMED CT, 
 
 | Extension | Canonical URL | Value |
 |---|---|---|
-| Observation warning | `https://w3id.org/FAIR-course-UT/2026-2027/group4/fhir/StructureDefinition/observation-mimic-warning` | `valueBoolean`: source `0` → `false`, `1` → `true` |
-| Admission type | `https://w3id.org/FAIR-course-UT/2026-2027/group4/fhir/StructureDefinition/encounter-mimic-admission-type` | `valueString`: verbatim `admission_type` |
+| Observation warning | `https://w3id.org/FAIR-course-UT/2026/group04/fhir/StructureDefinition/observation-mimic-warning` | `valueBoolean`: source `0` → `false`, `1` → `true` |
+| Admission type | `https://w3id.org/FAIR-course-UT/2026/group04/fhir/StructureDefinition/encounter-mimic-admission-type` | `valueString`: verbatim `admission_type` |
 
 Their meanings are defined in model §5.6 and §8.1. The warning extension records only that a care provider manually documented a warning. It does not mean the value is abnormal or invalid.
 
@@ -167,7 +167,7 @@ These checks establish RDF syntax, source fidelity, relational integrity and map
 - **Not strict FHIR-RDF.** The simplified dialect cannot be validated against the official R4 ShEx schema (`fhir.shex`), whose shapes are closed and require the omitted machinery. ShEx validation was deferred. The official R4 `fhir.shex` also refers to seven `http://hl7.org/fhirpath/System.*` shapes that it never defines, so any future ShEx validation will need a documented local definition of those shapes.
 - **Timezones.** FHIR R4 requires a timezone on any `dateTime` that includes a time. MIMIC's timestamps are shifted for deidentification and have no timezone, so none is asserted. This is a known FHIR conformance gap.
 - **Provisional extensions.** There are no formal `StructureDefinition`s, and the extension URLs do not resolve.
-- **Unregistered W3ID redirects.** None of the IRIs resolve yet. The `/fhir/StructureDefinition/` paths are **not** covered by the course's `/ont` and `/data#` redirect patterns, so they need their own check during publication.
+- **Unsubmitted W3ID redirects.** None of the IRIs resolve yet. The relay rules must cover the `/fhir/StructureDefinition/` paths as well as `/data`, so they need their own rule and test.
 - **MIMIC-FHIR dependencies.** The reused identifier systems and CodeSystems come from a *draft* IG (1.3.0) and are not controlled by the project. The MIMIC-FHIR ICD CodeSystem displays may differ from MIMIC `long_title`, which the model requires as the source display. A FHIR validator could flag that as a display mismatch.
 - **ICD validity not re-verified.** The canonical ICD codes are format-normalized only. Their historical validity rests on the earlier audit (see [`semantic_mapping_provenance.md`](semantic_mapping_provenance.md)) and was not checked again against CMS/CDC release files.
 - **Label discrepancies in the model text.** These do not affect meaning, and the model file was not edited:
