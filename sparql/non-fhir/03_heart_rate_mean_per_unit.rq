@@ -1,0 +1,16 @@
+# Mean heart rate per ICU care unit, selecting heart rate through its LOINC code.
+# Target: rdf/mimic_icu_vitals_4h_csv_non_FHIR.ttl
+
+PREFIX sosa: <http://www.w3.org/ns/sosa/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX qudt: <http://qudt.org/1.1/schema/qudt#>
+
+SELECT ?unit (COUNT(?o) AS ?nb_mesures) (ROUND(AVG(?v)*10)/10 AS ?fc_mean)
+WHERE {
+  ?o sosa:observes/owl:sameAs <http://loinc.org/8867-4> ;
+     dcterms:isPartOf/dcterms:type ?unit ;
+     sosa:hasResult/qudt:numericValue ?v .
+}
+GROUP BY ?unit
+ORDER BY DESC(?fc_mean)

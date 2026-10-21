@@ -1,0 +1,22 @@
+# Observations with the MIMIC warning flag set, with measurement, value, unit,
+# first-ranked diagnosis and verbatim admission type of the hospital stay.
+# Target: rdf/mimic_icu_vitals_4h.ttl
+
+PREFIX fhir: <http://hl7.org/fhir/>
+
+SELECT ?patient ?hour ?mesure ?value ?unit ?diagnostic ?adm_type
+WHERE {
+  ?o fhir:DomainResource.extension [
+         fhir:Extension.url "https://w3id.org/FAIR-course-UT/2026/group04/fhir/StructureDefinition/observation-mimic-warning" ;
+         fhir:Extension.valueBoolean true ] ;
+     fhir:Observation.subject ?patient ;
+     fhir:Observation.effectiveDateTime ?hour ;
+     fhir:Observation.valueQuantity [ fhir:Quantity.value ?value ; fhir:Quantity.unit ?unit ] ;
+     fhir:Observation.code/fhir:CodeableConcept.coding [ fhir:Coding.display ?mesure ;
+         fhir:Coding.system "http://mimic.mit.edu/fhir/mimic/CodeSystem/mimic-chartevents-d-items" ] ;
+     fhir:Observation.encounter/fhir:Encounter.partOf ?hosp .
+  ?hosp fhir:DomainResource.extension [
+            fhir:Extension.url "https://w3id.org/FAIR-course-UT/2026/group04/fhir/StructureDefinition/encounter-mimic-admission-type" ;
+            fhir:Extension.valueString ?adm_type ] ;
+        fhir:Encounter.diagnosis/fhir:Encounter.diagnosis.condition/fhir:Condition.code/fhir:CodeableConcept.coding/fhir:Coding.display ?diagnostic .
+}

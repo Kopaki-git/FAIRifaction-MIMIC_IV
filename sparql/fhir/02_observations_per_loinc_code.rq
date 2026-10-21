@@ -1,0 +1,20 @@
+# Number of Observations per LOINC code, with the MIMIC measurement label.
+# Shows that the standard LOINC codes can be queried directly, independent of MIMIC itemids.
+# Target: rdf/mimic_icu_vitals_4h.ttl
+
+PREFIX fhir: <http://hl7.org/fhir/>
+
+SELECT ?loinc (COUNT(?o) AS ?nb) ?name
+WHERE {
+  ?c fhir:Coding.system "http://loinc.org" ;
+     fhir:Coding.code ?loinc .
+  ?cc fhir:CodeableConcept.coding ?c .
+  ?o fhir:Observation.code ?cc .
+
+  OPTIONAL {
+    ?cc fhir:CodeableConcept.coding ?anyCoding .
+    ?anyCoding fhir:Coding.display ?name .
+  }
+}
+GROUP BY ?loinc ?name
+ORDER BY ?loinc

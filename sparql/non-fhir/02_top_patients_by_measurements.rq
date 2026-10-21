@@ -1,0 +1,14 @@
+# The five patients with the most observations, following Observation -> stay -> admission -> subject.
+# Target: rdf/mimic_icu_vitals_4h_csv_non_FHIR.ttl
+
+PREFIX sosa: <http://www.w3.org/ns/sosa/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+
+SELECT ?patient (COUNT(?o) AS ?nb_measures)
+WHERE {
+  ?o a sosa:Observation ; dcterms:isPartOf/dcterms:isPartOf/dcterms:subject ?p .
+  ?p dcterms:identifier ?patient .
+}
+GROUP BY ?patient
+ORDER BY DESC(?nb_measures)
+LIMIT 5

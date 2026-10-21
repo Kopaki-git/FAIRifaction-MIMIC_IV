@@ -1,0 +1,16 @@
+# Mean heart rate and number of patients per first-ranked billed diagnosis.
+# Path: Observation -> ICU Encounter -> Hospital Encounter (partOf) -> diagnosis -> Condition.
+# Target: rdf/mimic_icu_vitals_4h.ttl
+
+PREFIX fhir: <http://hl7.org/fhir/>
+
+SELECT ?diagnostic (COUNT(DISTINCT ?patient) AS ?nb_patients) (ROUND(AVG(?v)*10)/10 AS ?fc_mean)
+WHERE {
+  ?o fhir:Observation.code/fhir:CodeableConcept.coding [ fhir:Coding.system "http://loinc.org" ; fhir:Coding.code "8867-4" ] ;
+     fhir:Observation.valueQuantity/fhir:Quantity.value ?v ;
+     fhir:Observation.subject ?patient ;
+     fhir:Observation.encounter/fhir:Encounter.partOf/fhir:Encounter.diagnosis/fhir:Encounter.diagnosis.condition ?cond .
+  ?cond fhir:Condition.code/fhir:CodeableConcept.coding [ fhir:Coding.display ?diagnostic ] .
+}
+GROUP BY ?diagnostic
+ORDER BY DESC(?nb_patients)

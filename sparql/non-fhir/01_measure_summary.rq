@@ -1,0 +1,13 @@
+# Number of observations and mean value per measure and unit.
+# Target: rdf/mimic_icu_vitals_4h_csv_non_FHIR.ttl
+
+PREFIX sosa: <http://www.w3.org/ns/sosa/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX qudt: <http://qudt.org/1.1/schema/qudt#>
+
+SELECT ?measure ?unit (COUNT(?o) AS ?nb) (ROUND(AVG(?v)*10)/10 AS ?mean)
+WHERE {
+  ?o a sosa:Observation ; sosa:observes/rdfs:label ?measure ; sosa:hasResult ?r .
+  ?r qudt:numericValue ?v ; qudt:unit ?unit .
+}
+GROUP BY ?measure ?unit
