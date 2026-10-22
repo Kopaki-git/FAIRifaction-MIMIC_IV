@@ -163,12 +163,21 @@ dcat:Dataset
     sh:group :GeneralGroup
   ] ;
   sh:property [
+    sh:path dct:references ;
+    sh:name "References to" ;
+    sh:description "Standards and shapes that aligns to (e.g. HL7 FHIR R4, the SHACL shapes of this project)." ;
+    sh:nodeKind sh:IRI ;
+    sh:order 12 ;
+    dash:editor dash:URIEditor ;
+    sh:group :GeneralGroup
+  ] ;
+  sh:property [
     sh:path dct:accessRights ;
     sh:name "Access rights" ;
     sh:description "Statement of who can access the data and under which conditions (e.g. PhysioNet credentialed access)." ;
     sh:minCount 1 ;
     sh:maxCount 1 ;
-    sh:order 12 ;
+    sh:order 13 ;
     dash:editor dash:TextFieldEditor ;
     sh:group :GeneralGroup
   ] ;
@@ -179,7 +188,7 @@ dcat:Dataset
     sh:datatype xsd:date ;
     sh:minCount 1 ;
     sh:maxCount 1 ;
-    sh:order 13 ;
+    sh:order 14 ;
     dash:editor dash:DatePickerEditor ;
     sh:group :GeneralGroup
   ] ;
@@ -189,7 +198,7 @@ dcat:Dataset
     sh:description "Language of the textual content, as an IRI." ;
     sh:nodeKind sh:IRI ;
     sh:minCount 1 ;
-    sh:order 14 ;
+    sh:order 15 ;
     dash:editor dash:URIEditor ;
     sh:group :GeneralGroup
   ] .
@@ -259,16 +268,32 @@ dcat:Distribution
     dash:editor dash:URIEditor
   ] .
 
-# Any distribution that declares a downloadURL must also have a title and a media type
-# (works for IRIs and blank nodes).
 :RdfDistributionShape
   a sh:NodeShape ;
-  rdfs:label "Project RDF distribution" ;
-  sh:targetSubjectsOf dcat:downloadURL ;
-  sh:property [ sh:path dcat:downloadURL ; sh:minCount 1 ; sh:nodeKind sh:IRI ] ;
-  sh:property [ sh:path dcat:mediaType ; sh:minCount 1 ; sh:nodeKind sh:IRI ] ;
-  sh:property [ sh:path dct:title ; sh:minCount 1 ; sh:datatype xsd:string ] .
+  sh:property [
+    sh:path dcat:downloadURL ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1 ;
+    sh:order 0 ;
+    dash:editor dash:TextFieldEditor
+  ] ;
+  sh:property [
+    sh:path dcat:mediaType ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1 ;
+    sh:order 0 ;
+    dash:editor dash:TextFieldEditor
+  ] ;
+  sh:property [
+    sh:path dct:title ;
+    sh:datatype xsd:string ;
+    sh:minCount 1 ;
+    sh:order 0 ;
+    dash:editor dash:TextFieldEditor
+  ] .
 
 # ── Preserved: SHACL/RDF Contour does not model. Round-tripped as-is. ──
 <http://www.w3.org/ns/dcat#Dataset> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Class> .
 <http://xmlns.com/foaf/0.1/Organization> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Class> .
+<https://w3id.org/FAIR-course-UT/2026/group04/shapes/mimic-iv#RdfDistributionShape> <http://www.w3.org/2000/01/rdf-schema#label> "Project RDF distribution" .
+<https://w3id.org/FAIR-course-UT/2026/group04/shapes/mimic-iv#RdfDistributionShape> <http://www.w3.org/ns/shacl#targetSubjectsOf> <http://www.w3.org/ns/dcat#downloadURL> .
