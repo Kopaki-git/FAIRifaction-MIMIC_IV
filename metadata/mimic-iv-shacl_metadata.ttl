@@ -153,21 +153,11 @@ dcat:Dataset
     sh:group :GeneralGroup
   ] ;
   sh:property [
-    sh:path dct:conformsTo ;
-    sh:name "Conforms to" ;
-    sh:description "Standards and shapes the data conforms to (e.g. HL7 FHIR R4, the SHACL shapes of this project)." ;
-    sh:nodeKind sh:IRI ;
-    sh:minCount 1 ;
-    sh:order 11 ;
-    dash:editor dash:URIEditor ;
-    sh:group :GeneralGroup
-  ] ;
-  sh:property [
     sh:path dct:references ;
     sh:name "References to" ;
     sh:description "Standards and shapes that aligns to (e.g. HL7 FHIR R4, the SHACL shapes of this project)." ;
     sh:nodeKind sh:IRI ;
-    sh:order 12 ;
+    sh:order 11 ;
     dash:editor dash:URIEditor ;
     sh:group :GeneralGroup
   ] ;
@@ -177,8 +167,8 @@ dcat:Dataset
     sh:description "Statement of who can access the data and under which conditions (e.g. PhysioNet credentialed access)." ;
     sh:minCount 1 ;
     sh:maxCount 1 ;
-    sh:order 13 ;
-    dash:editor dash:TextFieldEditor ;
+    sh:order 12 ;
+    dash:editor dash:URIEditor ;
     sh:group :GeneralGroup
   ] ;
   sh:property [
@@ -188,7 +178,7 @@ dcat:Dataset
     sh:datatype xsd:date ;
     sh:minCount 1 ;
     sh:maxCount 1 ;
-    sh:order 14 ;
+    sh:order 13 ;
     dash:editor dash:DatePickerEditor ;
     sh:group :GeneralGroup
   ] ;
@@ -198,7 +188,7 @@ dcat:Dataset
     sh:description "Language of the textual content, as an IRI." ;
     sh:nodeKind sh:IRI ;
     sh:minCount 1 ;
-    sh:order 15 ;
+    sh:order 14 ;
     dash:editor dash:URIEditor ;
     sh:group :GeneralGroup
   ] .
