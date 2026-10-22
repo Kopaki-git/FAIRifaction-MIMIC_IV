@@ -12,7 +12,7 @@
         dct:title "MIMIC-IV ICU vitals (4h), FHIR-based RDF" ;
         dcat:accessURL <https://w3id.org/FAIR-course-UT/2026/group04/dataset/mimic-iv/rdf> ;
         dct:format "Turtle" ;
-        dcat:downloadURL <https://raw.githubusercontent.com/Kopaki-git/FAIRifaction-MIMIC_IV/refs/heads/main/rdf/mimic_icu_vitals_4h.ttl> ;
+        dcat:downloadURL <https://w3id.org/FAIR-course-UT/2026/group04/dataset/mimic-iv/rdf> ;
         dcat:mediaType <https://www.iana.org/assignments/media-types/text/turtle>
     ] ;
     dct:title "MIMIC-IV, a freely accessible electronic health record dataset" ;
@@ -32,7 +32,7 @@
     dct:license <https://opendatacommons.org/licenses/odbl/1-0/> ;
     dcat:keyword "ICU" ;
     dct:source <https://doi.org/10.13026/dp1f-ex47> ;
-    prov:wasDerivedFrom <https://physionet.org/content/mimiciv/2.2/> ;
+    prov:wasDerivedFrom <https://physionet.org/content/mimic-iv-demo/2.2/> ;
     dct:references <http://hl7.org/fhir/R4/>, <https://w3id.org/FAIR-course-UT/2026/group04/shapes/mimic-iv> ;
     dct:accessRights <http://publications.europa.eu/resource/authority/access-right/PUBLIC> ;
     dct:modified "2026-10-21"^^xsd:date ;
