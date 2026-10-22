@@ -7,7 +7,7 @@
 <https://w3id.org/FAIR-course-UT/2026/group04/dataset/mimic-iv> a dcat:Dataset ;
     dct:identifier "https://w3id.org/FAIR-course-UT/2026/group04/dataset/mimic-iv" ;
     dcat:theme <http://id.nlm.nih.gov/mesh/D007362> ;
-    dcat:distribution <https://physionet.org/content/mimiciv/2.2/>, [
+    dcat:distribution [
         a dcat:Distribution ;
         dct:title "MIMIC-IV ICU vitals (4h), FHIR-based RDF" ;
         dcat:accessURL <https://w3id.org/FAIR-course-UT/2026/group04/dataset/mimic-iv/rdf> ;
@@ -20,6 +20,13 @@
         dcat:accessURL <https://w3id.org/FAIR-course-UT/2026/group04/dataset/mimic-iv/csv> ;
         dct:format "CSV" ;
         dcat:downloadURL <https://w3id.org/FAIR-course-UT/2026/group04/dataset/mimic-iv/csv> ;
+        dcat:mediaType <https://www.iana.org/assignments/media-types/application/zip>
+    ], [
+        a dcat:Distribution ;
+        dct:title "MIMIC-IV Clinical Database Demo v2.2 — complete PhysioNet release" ;
+        dcat:accessURL <https://w3id.org/FAIR-course-UT/2026/group04/dataset/mimic-iv/source> ;
+        dct:format "CSV" ;
+        dcat:downloadURL <https://w3id.org/FAIR-course-UT/2026/group04/dataset/mimic-iv/source> ;
         dcat:mediaType <https://www.iana.org/assignments/media-types/application/zip>
     ] ;
     dct:title "MIMIC-IV Demo ICU vital signs, first 4 hours (FAIRified extract)" ;
@@ -43,9 +50,3 @@
     dct:accessRights <http://publications.europa.eu/resource/authority/access-right/PUBLIC> ;
     dct:modified "2026-10-21"^^xsd:date ;
     dct:language <http://id.loc.gov/vocabulary/iso639-1/en> .
-
-<https://physionet.org/content/mimiciv/2.2/> dct:title "MIMIC-IV Clinical Database Demo v2.2 — complete PhysioNet release" ;
-    dcat:accessURL <https://w3id.org/FAIR-course-UT/2026/group04/dataset/mimic-iv/source> ;
-    dct:format "CSV" ;
-    dcat:downloadURL <https://w3id.org/FAIR-course-UT/2026/group04/dataset/mimic-iv/source> ;
-    dcat:mediaType <https://www.iana.org/assignments/media-types/application/zip> .
