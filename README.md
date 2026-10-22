@@ -65,6 +65,7 @@ The RDF export is generated from the five derived tables by a Python/RDFLib scri
 python3 -m venv venv
 venv/bin/python -m pip install -r requirements.txt
 venv/bin/python src/generate_rdf.py          # writes rdf/mimic_icu_vitals_4h.ttl
+venv/bin/python src/build_csv_distribution.py  # writes data/derived/mimic_icu_vitals_4h.zip
 venv/bin/python -m pytest tests/ -v          # acceptance checks
 ```
 
@@ -126,12 +127,13 @@ The output is FHIR R4-aligned, simplified FHIR-predicate RDF, not strict FHIR-RD
 ├── README.md
 ├── data/
 │   └── derived/
-│       └── mimic_icu_vitals_4h/          # the five-table source resource
-│           ├── observations.csv
-│           ├── icu_stays.csv
-│           ├── careunit_intervals.csv
-│           ├── hospital_admissions.csv
-│           └── first_ranked_diagnoses.csv
+│       ├── mimic_icu_vitals_4h/          # the five-table source resource
+│       │   ├── observations.csv
+│       │   ├── icu_stays.csv
+│       │   ├── careunit_intervals.csv
+│       │   ├── hospital_admissions.csv
+│       │   └── first_ranked_diagnoses.csv
+│       └── mimic_icu_vitals_4h.zip       # the five CSVs as one file (CSV distribution)
 ├── docs/
 │   ├── semantic_model_mapping.md
 │   ├── semantic_mapping_provenance.md
@@ -158,8 +160,10 @@ The output is FHIR R4-aligned, simplified FHIR-predicate RDF, not strict FHIR-RD
 │       ├── 02_top_patients_by_measurements.rq
 │       └── 03_heart_rate_mean_per_unit.rq
 ├── src/
+│   ├── build_csv_distribution.py
 │   └── generate_rdf.py
 ├── tests/
+│   ├── test_csv_distribution.py
 │   └── test_rdf.py
 └── w3id/                                 # redirect rules, as live on the course relay
     ├── .htaccess
