@@ -30,7 +30,7 @@
         dcat:mediaType <https://www.iana.org/assignments/media-types/application/zip>
     ] ;
     dct:title "MIMIC-IV Demo ICU vital signs, first 4 hours (FAIRified extract)" ;
-    dct:description "Description: Heart rate, respiratory rate and SpO₂ charted in the first four hours of 133 ICU stays (94 patients, 121 hospital admissions; 2,501 observations), with care-unit intervals and the first-ranked billed diagnosis, extracted from MIMIC-IV Clinical Database Demo v2.2. Available as the original PhysioNet release, as five linked CSV tables, and as FHIR R4-aligned RDF." ;
+    dct:description "Heart rate, respiratory rate and SpO₂ charted in the first four hours of 133 ICU stays (94 patients, 121 hospital admissions; 2,501 observations), with care-unit intervals and the first-ranked billed diagnosis, extracted from MIMIC-IV Clinical Database Demo v2.2. Available as the original PhysioNet release, as five linked CSV tables, and as FHIR R4-aligned RDF." ;
     dct:creator [
         a foaf:Organization ;
         foaf:name "MIT Laboratory for Computational Physiology" ;
@@ -40,7 +40,7 @@
         a foaf:Organization ;
         foaf:name "Group 04, FAIR Data Engineering 2026, University of Twente"
     ] ;
-    dct:issued "2023-01-06"^^xsd:date ;
+    dct:issued "2026-10-22"^^xsd:date ;
     dcat:version "1.0" ;
     dct:license <https://opendatacommons.org/licenses/odbl/1-0/> ;
     dcat:keyword "ICU" ;
@@ -48,5 +48,5 @@
     prov:wasDerivedFrom <https://physionet.org/content/mimic-iv-demo/2.2/> ;
     dct:references <http://hl7.org/fhir/R4/>, <https://w3id.org/FAIR-course-UT/2026/group04/shapes/mimic-iv> ;
     dct:accessRights <http://publications.europa.eu/resource/authority/access-right/PUBLIC> ;
-    dct:modified "2026-10-21"^^xsd:date ;
+    dct:modified "2026-10-22"^^xsd:date ;
     dct:language <http://id.loc.gov/vocabulary/iso639-1/en> .
