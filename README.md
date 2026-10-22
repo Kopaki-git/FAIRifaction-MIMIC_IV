@@ -126,7 +126,7 @@ The output is FHIR R4-aligned, simplified FHIR-predicate RDF, not strict FHIR-RD
 ├── README.md
 ├── data/
 │   └── derived/
-│       └── mimic_icu_vitals_4h/
+│       └── mimic_icu_vitals_4h/          # the five-table source resource
 │           ├── observations.csv
 │           ├── icu_stays.csv
 │           ├── careunit_intervals.csv
@@ -137,15 +137,33 @@ The output is FHIR R4-aligned, simplified FHIR-predicate RDF, not strict FHIR-RD
 │   ├── semantic_mapping_provenance.md
 │   ├── rdf_implementation_handoff.md
 │   └── rdf_serialization.md
+├── metadata/                             # DCAT metadata record and SHACL shapes
+│   ├── mimic-iv-RDF_metadata.ttl
+│   └── mimic-iv-shacl_metadata.ttl
 ├── notebooks/
 │   └── 01_dataset_exploration_and_extraction.ipynb
+├── presentation/
+│   └── outline.md
 ├── rdf/
-│   └── mimic_icu_vitals_4h.ttl
+│   ├── mimic_icu_vitals_4h.ttl           # FHIR R4-aligned RDF (generated)
+│   └── mimic_icu_vitals_4h_csv_non_FHIR.ttl
 ├── requirements.txt
+├── sparql/                               # example queries, one per .rq file
+│   ├── fhir/
+│   │   ├── 01_heart_rate_by_first_diagnosis.rq
+│   │   ├── 02_observations_per_loinc_code.rq
+│   │   └── 03_warning_observations_with_context.rq
+│   └── non-fhir/
+│       ├── 01_measure_summary.rq
+│       ├── 02_top_patients_by_measurements.rq
+│       └── 03_heart_rate_mean_per_unit.rq
 ├── src/
 │   └── generate_rdf.py
-└── tests/
-    └── test_rdf.py
+├── tests/
+│   └── test_rdf.py
+└── w3id/                                 # redirect rules, as live on the course relay
+    ├── .htaccess
+    └── tests.yaml
 ```
 
 ## Source, licensing and attribution
