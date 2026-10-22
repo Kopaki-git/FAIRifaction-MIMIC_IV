@@ -105,7 +105,7 @@ The canonical model is FHIR-aligned. **Strict FHIR-RDF serialization and FHIR in
 
 ## Current implementation status
 
-As of 17 October 2026:
+As of 22 October 2026:
 
 - Canonical source extraction and validation: **completed**.
 - Clinical-semantic model and terminology choices: **audited and frozen**.
@@ -113,8 +113,8 @@ As of 17 October 2026:
 - Identifier and namespace decisions: **resolved**; the W3ID base `https://w3id.org/FAIR-course-UT/2026/group04/` is confirmed by the teacher.
 - Executable RDF transformation (Python/RDFLib) and Turtle export: **implemented**, `rdf/mimic_icu_vitals_4h.ttl`.
 - RDF acceptance checks: **implemented** in `tests/test_rdf.py`. They check syntax, source fidelity, relational integrity, mapping fidelity and reproducibility, not FHIR conformance.
-- W3ID redirect registration and publication infrastructure: **pending**.
-- Metadata and FAIR Data Point work: **in progress or pending**, coordinated separately.
+- W3ID redirects: **live** through the course relay (rules in `w3id/`); all IRIs resolve.
+- Metadata and FAIR Data Point publication: **in progress**, coordinated separately.
 
 The output is FHIR R4-aligned, simplified FHIR-predicate RDF, not strict FHIR-RDF. Its decisions and limitations are recorded in [`docs/rdf_serialization.md`](docs/rdf_serialization.md). The original acceptance criteria are in [`docs/rdf_implementation_handoff.md`](docs/rdf_implementation_handoff.md).
 

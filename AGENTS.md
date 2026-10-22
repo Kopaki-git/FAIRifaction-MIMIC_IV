@@ -64,7 +64,7 @@ In particular:
 
 Resolved with the user and recorded in `docs/rdf_serialization.md` (D1–D7). Do not reopen them without a demonstrated blocking problem and an explicit user decision.
 
-- **D1 W3ID base:** `https://w3id.org/FAIR-course-UT/2026/group04/`, confirmed by the teacher. Redirect rules for the course relay are not yet submitted, so the IRIs do not resolve.
+- **D1 W3ID base:** `https://w3id.org/FAIR-course-UT/2026/group04/`, confirmed by the teacher. Redirects are live through the course relay (rules in `w3id/`, relay PRs #12 and #14), so all IRIs resolve.
 - **D2 Resource IRIs:** hash namespace `<base>data#`, deterministic patterns built only from source keys.
 - **D3 Nested elements:** blank nodes for all FHIR datatypes and backbone elements; IRIs only for the six resource kinds.
 - **D4–D5:** `Identifier.system` URIs and MIMIC-local CodeSystems reused from the MIMIC-FHIR IG 1.3.0 (draft).
@@ -109,7 +109,8 @@ These are documented in `docs/rdf_serialization.md` §6 and are accepted, not ou
 
 - Not strict FHIR-RDF; no ShEx validation.
 - No timezone on timestamps (an R4 conformance gap).
-- Provisional extensions; W3ID redirects unregistered.
+- Provisional extensions; their URLs redirect to the `docs/` folder, not to definitions.
+- Browsers resolving a `data#…` IRI land on the `rdf/` folder until a public landing page exists.
 - Reused MIMIC-FHIR systems come from a draft IG.
 - Canonical ICD codes are format-normalized only, not re-validated against CMS/CDC releases.
 

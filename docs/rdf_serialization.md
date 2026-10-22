@@ -41,7 +41,7 @@ The generator reads only the five canonical tables in `data/derived/mimic_icu_vi
 
 The teacher confirmed this namespace for our Canvas group, Group 4. It replaces the base adopted provisionally on 15 October (`2026-2027/group4`).
 
-w3id.org forwards the course namespace to the course's redirect relay, where our rules belong in `rules/FAIR-course-UT/2026/group04/`. Until our rules are submitted there, the IRIs **do not resolve**. Preparing and submitting the rules is a separate workstream.
+w3id.org forwards the course namespace to the course's redirect relay. Our rules live there in `rules/FAIR-course-UT/2026/group04/` and are kept in this repository under `w3id/`. They were merged on 22 October 2026 (relay PRs #12 and #14), and the IRIs **resolve**. A `data#…` IRI reaches the relay as `data`, because clients do not send the fragment, so one rule serves every resource: Turtle clients get `rdf/mimic_icu_vitals_4h.ttl`, and browsers get the `rdf/` folder on GitHub.
 
 ### D2 — Resource IRI patterns
 
@@ -99,7 +99,7 @@ The standard codings are unchanged from the model (LOINC, UCUM, HL7, SNOMED CT, 
 
 Their meanings are defined in model §5.6 and §8.1. The warning extension records only that a care provider manually documented a warning. It does not mean the value is abnormal or invalid.
 
-These definitions are **provisional**. No formal FHIR `StructureDefinition` resources exist, and the URLs do not resolve.
+These definitions are **provisional**. No formal FHIR `StructureDefinition` resources exist, and the URLs redirect to the repository's `docs/` folder, not to a definition of each extension.
 
 ---
 
@@ -166,8 +166,8 @@ These checks establish RDF syntax, source fidelity, relational integrity and map
 
 - **Not strict FHIR-RDF.** The simplified dialect cannot be validated against the official R4 ShEx schema (`fhir.shex`), whose shapes are closed and require the omitted machinery. ShEx validation was deferred. The official R4 `fhir.shex` also refers to seven `http://hl7.org/fhirpath/System.*` shapes that it never defines, so any future ShEx validation will need a documented local definition of those shapes.
 - **Timezones.** FHIR R4 requires a timezone on any `dateTime` that includes a time. MIMIC's timestamps are shifted for deidentification and have no timezone, so none is asserted. This is a known FHIR conformance gap.
-- **Provisional extensions.** There are no formal `StructureDefinition`s, and the extension URLs do not resolve.
-- **Unsubmitted W3ID redirects.** None of the IRIs resolve yet. The relay rules must cover the `/fhir/StructureDefinition/` paths as well as `/data`, so they need their own rule and test.
+- **Provisional extensions.** There are no formal `StructureDefinition`s, and the extension URLs redirect to the `docs/` folder, not to a definition.
+- **Interim redirect targets.** The IRIs resolve, but browsers land on the `rdf/` folder (the Turtle file is too large for GitHub to display), and the extension URLs on `docs/`. A public landing page is planned to replace both.
 - **MIMIC-FHIR dependencies.** The reused identifier systems and CodeSystems come from a *draft* IG (1.3.0) and are not controlled by the project. The MIMIC-FHIR ICD CodeSystem displays may differ from MIMIC `long_title`, which the model requires as the source display. A FHIR validator could flag that as a display mismatch.
 - **ICD validity not re-verified.** The canonical ICD codes are format-normalized only. Their historical validity rests on the earlier audit (see [`semantic_mapping_provenance.md`](semantic_mapping_provenance.md)) and was not checked again against CMS/CDC release files.
 - **Label discrepancies in the model text.** These do not affect meaning, and the model file was not edited:
