@@ -118,7 +118,7 @@ Represent them accurately in any report, presentation or documentation. Do not d
 
 ## Current priorities and workstream boundaries
 
-Deadlines: project presentation **26 October 2026**; final deliverables **7 November 2026**.
+Deadlines: project presentation **26 October 2026**; final deliverables **1 November 2026** (moved forward from 7 November by the professor on 22 October).
 
 In this workstream:
 
