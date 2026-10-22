@@ -5,7 +5,7 @@
 @prefix prov: <http://www.w3.org/ns/prov#> .
 
 <https://w3id.org/FAIR-course-UT/2026/group04/dataset/mimic-iv> a dcat:Dataset ;
-    dct:identifier "doi:10.13026/dp1f-ex47" ;
+    dct:identifier "https://w3id.org/FAIR-course-UT/2026/group04/dataset/mimic-iv" ;
     dcat:theme <http://id.nlm.nih.gov/mesh/D007362> ;
     dcat:distribution <https://physionet.org/content/mimiciv/2.2/>, [
         a dcat:Distribution ;
@@ -14,9 +14,16 @@
         dct:format "Turtle" ;
         dcat:downloadURL <https://w3id.org/FAIR-course-UT/2026/group04/dataset/mimic-iv/rdf> ;
         dcat:mediaType <https://www.iana.org/assignments/media-types/text/turtle>
+    ], [
+        a dcat:Distribution ;
+        dct:title "ICU vital-signs extract — five linked CSV tables" ;
+        dcat:accessURL <https://w3id.org/FAIR-course-UT/2026/group04/dataset/mimic-iv/csv> ;
+        dct:format "CSV" ;
+        dcat:downloadURL <https://w3id.org/FAIR-course-UT/2026/group04/dataset/mimic-iv/csv> ;
+        dcat:mediaType <https://www.iana.org/assignments/media-types/application/zip>
     ] ;
-    dct:title "MIMIC-IV, a freely accessible electronic health record dataset" ;
-    dct:description "MIMIC (Medical Information Mart for Intensive Care) is a large, freely-available database comprising deidentified health-related data from patients who were admitted to the critical care units of the Beth Israel Deaconess Medical Center. This site contains information from the various versions of MIMIC released over the year. MIMIC-IV contains data from 2008-2019. The data was collected from Metavision bedside monitors" ;
+    dct:title "MIMIC-IV Demo ICU vital signs, first 4 hours (FAIRified extract)" ;
+    dct:description "Description: Heart rate, respiratory rate and SpO₂ charted in the first four hours of 133 ICU stays (94 patients, 121 hospital admissions; 2,501 observations), with care-unit intervals and the first-ranked billed diagnosis, extracted from MIMIC-IV Clinical Database Demo v2.2. Available as the original PhysioNet release, as five linked CSV tables, and as FHIR R4-aligned RDF." ;
     dct:creator [
         a foaf:Organization ;
         foaf:name "MIT Laboratory for Computational Physiology" ;
@@ -24,11 +31,10 @@
     ] ;
     dct:publisher [
         a foaf:Organization ;
-        foaf:name "PhysioNet" ;
-        foaf:homepage <https://physionet.org>
+        foaf:name "Group 04, FAIR Data Engineering 2026, University of Twente"
     ] ;
     dct:issued "2023-01-06"^^xsd:date ;
-    dcat:version "2.2" ;
+    dcat:version "1.0" ;
     dct:license <https://opendatacommons.org/licenses/odbl/1-0/> ;
     dcat:keyword "ICU" ;
     dct:source <https://doi.org/10.13026/dp1f-ex47> ;
@@ -38,5 +44,8 @@
     dct:modified "2026-10-21"^^xsd:date ;
     dct:language <http://id.loc.gov/vocabulary/iso639-1/en> .
 
-<https://physionet.org/content/mimiciv/2.2/> dcat:accessURL <https://physionet.org/content/mimic-iv-demo/2.2/> ;
-    dct:format "CSV" .
+<https://physionet.org/content/mimiciv/2.2/> dct:title "MIMIC-IV Clinical Database Demo v2.2 — complete PhysioNet release" ;
+    dcat:accessURL <https://w3id.org/FAIR-course-UT/2026/group04/dataset/mimic-iv/source> ;
+    dct:format "CSV" ;
+    dcat:downloadURL <https://w3id.org/FAIR-course-UT/2026/group04/dataset/mimic-iv/source> ;
+    dcat:mediaType <https://www.iana.org/assignments/media-types/application/zip> .
