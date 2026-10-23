@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1045 550" width="1045" height="550" font-family="Helvetica, Arial, sans-serif">
+  <!-- Resource-level overview of docs/semantic_model_mapping.md §4. Labels are display forms of fhir:<Type>.<path> predicates. -->
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4a5568"/>
+    </marker>
+    <style>
+      .box { fill: #f5f7fa; stroke: #4a5568; stroke-width: 1.2; }
+      .head { fill: #2d3e50; }
+      .title { fill: #ffffff; font-size: 14px; font-weight: bold; }
+      .count { fill: #c8d3df; font-size: 12px; }
+      .key { fill: #5a6472; font-size: 12px; }
+      .val { fill: #1a202c; font-size: 12px; }
+      .src { fill: #a35a00; }
+      .std { fill: #1f5fa8; font-weight: bold; }
+      .edge { stroke: #4a5568; stroke-width: 1.4; fill: none; marker-end: url(#arrow); }
+      .elabel { fill: #1a202c; font-size: 12px; font-style: italic; }
+      .nested { fill: #5a6472; font-size: 11px; }
+      .legend { fill: #1a202c; font-size: 11px; }
+    </style>
+  </defs>
+
+  <rect width="1045" height="550" fill="#ffffff"/>
+
+  <!-- Edges (drawn first so boxes sit on top) -->
+  <path class="edge" d="M260,250 H388"/>
+  <text class="elabel" x="324" y="242" text-anchor="middle">encounter</text>
+
+  <path class="edge" d="M630,250 H758"/>
+  <text class="elabel" x="694" y="242" text-anchor="middle">partOf</text>
+
+  <path class="edge" d="M140,200 V62 H388"/>
+  <text class="elabel" x="148" y="140">subject</text>
+
+  <path class="edge" d="M510,200 V97"/>
+  <text class="elabel" x="518" y="152">subject</text>
+
+  <path class="edge" d="M880,200 V72 H632"/>
+  <text class="elabel" x="888" y="140">subject</text>
+
+  <path class="edge" d="M1000,470 H1025 V42 H632"/>
+  <text class="elabel" x="1010" y="36" text-anchor="end">subject</text>
+
+  <path class="edge" d="M510,300 V428"/>
+  <text class="elabel" x="520" y="358">location</text>
+  <text class="nested" x="520" y="374">[period: intime → outtime]</text>
+
+  <path class="edge" d="M860,345 V428"/>
+  <text class="elabel" x="852" y="380" text-anchor="end">diagnosis</text>
+  <text class="nested" x="852" y="396" text-anchor="end">[rank 1, use: billing]</text>
+
+  <path class="edge" d="M940,430 V347"/>
+  <text class="elabel" x="948" y="392">encounter</text>
+
+  <!-- Patient -->
+  <rect class="box" x="390" y="25" width="240" height="70" rx="4"/>
+  <path class="head" d="M394,25 H626 A4,4 0 0 1 630,29 V51 H390 V29 A4,4 0 0 1 394,25 z"/>
+  <text class="title" x="402" y="43">Patient</text>
+  <text class="count" x="618" y="43" text-anchor="end">94</text>
+  <text class="key" x="402" y="74">identifier</text>
+  <text class="val" x="480" y="74"><tspan class="src">subject_id</tspan></text>
+
+  <!-- Observation -->
+  <rect class="box" x="20" y="200" width="240" height="145" rx="4"/>
+  <path class="head" d="M24,200 H256 A4,4 0 0 1 260,204 V226 H20 V204 A4,4 0 0 1 24,200 z"/>
+  <text class="title" x="32" y="218">Observation</text>
+  <text class="count" x="248" y="218" text-anchor="end">2,501</text>
+  <text class="key" x="32" y="246">code</text>
+  <text class="val" x="102" y="246"><tspan class="src">itemid</tspan> + <tspan class="std">LOINC</tspan></text>
+  <text class="key" x="32" y="265">value</text>
+  <text class="val" x="102" y="265"><tspan class="src">valuenum, unit</tspan> + <tspan class="std">UCUM</tspan></text>
+  <text class="key" x="32" y="284">effective</text>
+  <text class="val" x="102" y="284"><tspan class="src">charttime</tspan></text>
+  <text class="key" x="32" y="303">category</text>
+  <text class="val" x="102" y="303"><tspan class="std">vital-signs</tspan></text>
+  <text class="key" x="32" y="322">extension</text>
+  <text class="val" x="102" y="322"><tspan class="src">warning</tspan></text>
+
+  <!-- ICU Encounter -->
+  <rect class="box" x="390" y="200" width="240" height="100" rx="4"/>
+  <path class="head" d="M394,200 H626 A4,4 0 0 1 630,204 V226 H390 V204 A4,4 0 0 1 394,200 z"/>
+  <text class="title" x="402" y="218">ICU Encounter</text>
+  <text class="count" x="618" y="218" text-anchor="end">133</text>
+  <text class="key" x="402" y="246">identifier</text>
+  <text class="val" x="480" y="246"><tspan class="src">stay_id</tspan></text>
+  <text class="key" x="402" y="265">class</text>
+  <text class="val" x="480" y="265"><tspan class="std">ACUTE</tspan></text>
+  <text class="key" x="402" y="284">period</text>
+  <text class="val" x="480" y="284"><tspan class="src">intime → outtime</tspan></text>
+
+  <!-- Hospital Encounter -->
+  <rect class="box" x="760" y="200" width="240" height="145" rx="4"/>
+  <path class="head" d="M764,200 H996 A4,4 0 0 1 1000,204 V226 H760 V204 A4,4 0 0 1 764,200 z"/>
+  <text class="title" x="772" y="218">Hospital Encounter</text>
+  <text class="count" x="988" y="218" text-anchor="end">121</text>
+  <text class="key" x="772" y="246">identifier</text>
+  <text class="val" x="842" y="246"><tspan class="src">hadm_id</tspan></text>
+  <text class="key" x="772" y="265">class</text>
+  <text class="val" x="842" y="265"><tspan class="std">IMP</tspan></text>
+  <text class="key" x="772" y="284">priority</text>
+  <text class="val" x="842" y="284"><tspan class="std">HL7</tspan>, where mapped</text>
+  <text class="key" x="772" y="303">extension</text>
+  <text class="val" x="842" y="303"><tspan class="src">admission_type</tspan></text>
+  <text class="key" x="772" y="322">period</text>
+  <text class="val" x="842" y="322"><tspan class="src">admittime → dischtime</tspan></text>
+
+  <!-- Location -->
+  <rect class="box" x="390" y="430" width="240" height="82" rx="4"/>
+  <path class="head" d="M394,430 H626 A4,4 0 0 1 630,434 V456 H390 V434 A4,4 0 0 1 394,430 z"/>
+  <text class="title" x="402" y="448">Location</text>
+  <text class="count" x="618" y="448" text-anchor="end">9</text>
+  <text class="key" x="402" y="477">name</text>
+  <text class="val" x="480" y="477"><tspan class="src">careunit</tspan></text>
+  <text class="key" x="402" y="497">type</text>
+  <text class="val" x="480" y="497"><tspan class="std">HL7 role</tspan> + <tspan class="std">SNOMED CT</tspan>*</text>
+
+  <!-- Condition -->
+  <rect class="box" x="760" y="430" width="240" height="82" rx="4"/>
+  <path class="head" d="M764,430 H996 A4,4 0 0 1 1000,434 V456 H760 V434 A4,4 0 0 1 764,430 z"/>
+  <text class="title" x="772" y="448">Condition</text>
+  <text class="count" x="988" y="448" text-anchor="end">121</text>
+  <text class="key" x="772" y="477">code</text>
+  <text class="val" x="842" y="477"><tspan class="src">icd_code</tspan> + <tspan class="std">canonical ICD</tspan></text>
+  <text class="key" x="772" y="497">category</text>
+  <text class="val" x="842" y="497"><tspan class="std">encounter-diagnosis</tspan></text>
+
+  <!-- Legend -->
+  <text class="legend" x="20" y="420" font-weight="bold">Legend</text>
+  <text class="legend" x="20" y="440"><tspan class="src">orange</tspan>: MIMIC source value, kept verbatim</text>
+  <text class="legend" x="20" y="457"><tspan class="std">blue</tspan>: standard terminology (HL7, LOINC, UCUM,</text>
+  <text class="legend" x="20" y="472">SNOMED CT, ICD-9/10-CM)</text>
+  <path class="edge" d="M20,488 H52"/>
+  <text class="legend" x="60" y="492">reference; [brackets]: nested element</text>
+  <text class="legend" x="20" y="510">Numbers: resources in the graph.</text>
+  <text class="legend" x="20" y="527">* SNOMED CT only where defensibly specific.</text>
+  <text class="legend" x="20" y="544">Labels are short forms of fhir:&lt;Type&gt;.&lt;path&gt;.</text>
+</svg>
