@@ -139,7 +139,10 @@ The output is FHIR R4-aligned, simplified FHIR-predicate RDF, not strict FHIR-RD
 │   ├── semantic_mapping_provenance.md
 │   ├── rdf_implementation_handoff.md
 │   ├── rdf_serialization.md
-│   └── fair_assessment.md
+│   ├── fair_assessment.md
+│   ├── concept_uris.md                   # class, predicate and terminology URIs used
+│   └── figures/
+│       └── semantic_model_overview.svg   # resource-level model diagram
 ├── metadata/                             # DCAT metadata record and SHACL shapes
 │   ├── mimic-iv-RDF_metadata.ttl
 │   └── mimic-iv-shacl_metadata.ttl
