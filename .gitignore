@@ -227,3 +227,9 @@ __marimo__/
 *Zone*
 # Course report template (local working copy, not a deliverable)
 FAIRcourse-report_template*.dotx
+
+# macOS Finder metadata
+.DS_Store
+
+# Microsoft Office lock files for open documents
+~$*
