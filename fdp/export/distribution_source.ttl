@@ -1,0 +1,47 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix ldp: <http://www.w3.org/ns/ldp#> .
+
+<http://localhost:8085/distribution/cbd28901-9124-4c55-9d8d-05a22bab722b> a dcat:Resource,
+    dcat:Distribution;
+  <http://www.w3.org/2000/01/rdf-schema#label> "MIMIC-IV Clinical Database Demo v2.2 — complete PhysioNet release";
+  dcterms:title "MIMIC-IV Clinical Database Demo v2.2 — complete PhysioNet release";
+  dcat:version "2.2";
+  <https://w3id.org/fdp/fdp-o#metadataIssued> "2026-10-28T17:16:16.427140218Z"^^xsd:dateTime;
+  <https://w3id.org/fdp/fdp-o#metadataModified> "2026-10-28T17:16:16.427140218Z"^^xsd:dateTime;
+  dcterms:license <https://opendatacommons.org/licenses/odbl/1-0/>;
+  dcterms:language <http://id.loc.gov/vocabulary/iso639-1/en>;
+  <https://w3id.org/fdp/fdp-o#metadataIdentifier> <http://localhost:8085/distribution/cbd28901-9124-4c55-9d8d-05a22bab722b#identifier>;
+  dcterms:accessRights <http://localhost:8085/distribution/cbd28901-9124-4c55-9d8d-05a22bab722b#accessRights>;
+  dcterms:publisher [ a foaf:Organization;
+      foaf:name "PhysioNet"
+    ];
+  <http://semanticscience.org/resource/SIO_000628> <http://localhost:8085/distribution/cbd28901-9124-4c55-9d8d-05a22bab722b/metrics/445c0a70d1e214e545b261559e2842f4>,
+    <http://localhost:8085/distribution/cbd28901-9124-4c55-9d8d-05a22bab722b/metrics/5d27e854a9e78eb3f663331cd47cdc13>;
+  dcterms:isPartOf <http://localhost:8085/dataset/0e48302c-e451-4cb4-85a5-54d4a9a9fc7f>;
+  dcterms:format "CSV";
+  dcat:mediaType <https://www.iana.org/assignments/media-types/application/zip>;
+  dcat:accessURL <https://w3id.org/FAIR-course-UT/2026/group04/dataset/mimic-iv/source>;
+  dcat:downloadURL <https://w3id.org/FAIR-course-UT/2026/group04/dataset/mimic-iv/source>;
+  dcterms:conformsTo <http://localhost:8085/profile/02c649de-c579-43bb-b470-306abdc808c7> .
+
+<http://localhost:8085/distribution/cbd28901-9124-4c55-9d8d-05a22bab722b#identifier>
+  a <http://purl.org/spar/datacite/Identifier>;
+  dcterms:identifier "http://localhost:8085/distribution/cbd28901-9124-4c55-9d8d-05a22bab722b" .
+
+<http://localhost:8085/distribution/cbd28901-9124-4c55-9d8d-05a22bab722b#accessRights>
+  a dcterms:RightsStatement;
+  dcterms:description "This resource has no access restriction" .
+
+<http://localhost:8085/distribution/cbd28901-9124-4c55-9d8d-05a22bab722b/metrics/445c0a70d1e214e545b261559e2842f4>
+  <http://semanticscience.org/resource/SIO_000628> <https://www.ietf.org/rfc/rfc3986.txt>;
+  <http://semanticscience.org/resource/SIO_000332> <https://www.ietf.org/rfc/rfc3986.txt> .
+
+<http://localhost:8085/distribution/cbd28901-9124-4c55-9d8d-05a22bab722b/metrics/5d27e854a9e78eb3f663331cd47cdc13>
+  <http://semanticscience.org/resource/SIO_000628> <https://www.wikidata.org/wiki/Q8777>;
+  <http://semanticscience.org/resource/SIO_000332> <https://www.wikidata.org/wiki/Q8777> .
+
+<http://localhost:8085/profile/02c649de-c579-43bb-b470-306abdc808c7> <http://www.w3.org/2000/01/rdf-schema#label>
+    "Distribution Profile" .

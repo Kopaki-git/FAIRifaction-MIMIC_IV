@@ -118,17 +118,17 @@ Represent them accurately in any report, presentation or documentation. Do not d
 
 ## Current priorities and workstream boundaries
 
-Deadlines: project presentation **26 October 2026**; final deliverables **1 November 2026** (moved forward from 7 November by the professor on 22 October).
+Deadlines: project presentation given on **26 October 2026**; final deliverables, mainly the report, due **1 November 2026** (moved forward from 7 November by the professor on 22 October).
 
 In this workstream:
 
 - Keep the generator, tests, Turtle export and documentation consistent with each other.
-- Support the report and presentation with accurate claims: FHIR-aligned RDF, baseline FAIR properties of MIMIC-IV and MIMIC-FHIR distinguished from the project's added value, and limitations stated.
+- Support the report with accurate claims: FHIR-aligned RDF, baseline FAIR properties of MIMIC-IV and MIMIC-FHIR distinguished from the project's added value, and limitations stated.
+- The local FAIR Data Point (`fdp/`): its setup, its Dataset and Distribution schemas (extended with the project's SHACL properties), and the records exported to `fdp/export/`. Change records or schemas in the running FDP, then re-export; do not hand-edit the exports.
 
 Coordinated separately by a teammate, and out of scope unless the user explicitly brings them in:
 
 - SHACL metadata schemas and records (`metadata/`).
-- FAIR Data Point publication.
 - W3ID redirect registration.
 - SPARQL and cross-dataset integration queries.
 - `rdf/mimic_icu_vitals_4h_csv_non_FHIR.ttl`.

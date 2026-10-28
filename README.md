@@ -106,7 +106,7 @@ The canonical model is FHIR-aligned. **Strict FHIR-RDF serialization and FHIR in
 
 ## Current implementation status
 
-As of 22 October 2026:
+As of 28 October 2026:
 
 - Canonical source extraction and validation: **completed**.
 - Clinical-semantic model and terminology choices: **audited and frozen**.
@@ -115,9 +115,25 @@ As of 22 October 2026:
 - Executable RDF transformation (Python/RDFLib) and Turtle export: **implemented**, `rdf/mimic_icu_vitals_4h.ttl`.
 - RDF acceptance checks: **implemented** in `tests/test_rdf.py`. They check syntax, source fidelity, relational integrity, mapping fidelity and reproducibility, not FHIR conformance.
 - W3ID redirects: **live** through the course relay (rules in `w3id/`); all IRIs resolve.
-- Metadata and FAIR Data Point publication: **in progress**, coordinated separately.
+- Metadata: **published** as a DCAT record (`metadata/`), resolvable via the dataset W3ID, and in a **local FAIR Data Point** (setup in `fdp/`, see below).
 
 The output is FHIR R4-aligned, simplified FHIR-predicate RDF, not strict FHIR-RDF. Its decisions and limitations are recorded in [`docs/rdf_serialization.md`](docs/rdf_serialization.md). The original acceptance criteria are in [`docs/rdf_implementation_handoff.md`](docs/rdf_implementation_handoff.md).
+
+## FAIR Data Point
+
+The course requires a local FAIR Data Point; it is not publicly hosted. To run it (Docker required):
+
+```bash
+cd fdp
+docker compose up -d graphdb
+# first run only: in GraphDB (http://localhost:7200) create a repository "fdp"
+# and a user "fdp" (password "fdp") with write access to it
+docker compose up -d
+```
+
+The FDP is then at <http://localhost:8085>. It holds one catalog, the dataset and its three distributions. The FDP's Dataset and Distribution schemas were extended with the properties of the project's SHACL shapes (`metadata/mimic-iv-shacl_metadata.ttl`). `fdp/export/` holds the records and schemas as exported from it.
+
+The setup follows the course instructions with three changes needed to make them run: the FDP is pinned to 1.18 (`latest` requires a JWT secret), MongoDB is 7.0 (4.0.12 is too old for the FDP 1.18 driver), and the FDP's URLs are set to `localhost:8085` so record IRIs resolve.
 
 ## Repository structure
 
@@ -143,7 +159,18 @@ The output is FHIR R4-aligned, simplified FHIR-predicate RDF, not strict FHIR-RD
 │   ├── concept_uris.md                   # class, predicate and terminology URIs used
 │   └── figures/
 │       └── semantic_model_overview.svg   # resource-level model diagram
-├── metadata/                             # DCAT metadata record and SHACL shapes
+├── fdp/                                  # local FAIR Data Point (Docker Compose)
+│   ├── docker-compose.yml
+│   ├── application.yml
+│   └── export/                           # records and schemas exported from the FDP
+│       ├── dataset.ttl
+│       ├── distribution_rdf.ttl
+│       ├── distribution_csv.ttl
+│       ├── distribution_source.ttl
+│       ├── dataset_schema.ttl
+│       ├── distribution_schema.ttl
+│       └── resource_schema.ttl
+├── metadata/                             # DCAT metadata record and SHACL shapes (Contour)
 │   ├── mimic-iv-RDF_metadata.ttl
 │   └── mimic-iv-shacl_metadata.ttl
 ├── notebooks/

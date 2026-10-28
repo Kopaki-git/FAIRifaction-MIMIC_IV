@@ -1,0 +1,61 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix ldp: <http://www.w3.org/ns/ldp#> .
+
+<http://localhost:8085/dataset/0e48302c-e451-4cb4-85a5-54d4a9a9fc7f> a dcat:Resource,
+    dcat:Dataset;
+  <http://www.w3.org/2000/01/rdf-schema#label> "MIMIC-IV Demo ICU vital signs, first 4 hours (FAIRified extract)";
+  dcterms:title "MIMIC-IV Demo ICU vital signs, first 4 hours (FAIRified extract)";
+  dcat:version "1.0";
+  <https://w3id.org/fdp/fdp-o#metadataIssued> "2026-10-28T17:15:31.919993086Z"^^xsd:dateTime;
+  <https://w3id.org/fdp/fdp-o#metadataModified> "2026-10-28T17:16:16.469417218Z"^^xsd:dateTime;
+  dcterms:license <https://opendatacommons.org/licenses/odbl/1-0/>;
+  dcterms:description "Heart rate, respiratory rate and SpO₂ charted in the first four hours of 133 ICU stays (94 patients, 121 hospital admissions; 2,501 observations), with care-unit intervals and the first-ranked billed diagnosis, extracted from MIMIC-IV Clinical Database Demo v2.2. Available as the original PhysioNet release, as five linked CSV tables, and as FHIR R4-aligned RDF.";
+  dcterms:language <http://id.loc.gov/vocabulary/iso639-1/en>;
+  <https://w3id.org/fdp/fdp-o#metadataIdentifier> <http://localhost:8085/dataset/0e48302c-e451-4cb4-85a5-54d4a9a9fc7f#identifier>;
+  dcterms:identifier "https://w3id.org/FAIR-course-UT/2026/group04/dataset/mimic-iv";
+  dcterms:accessRights <http://publications.europa.eu/resource/authority/access-right/PUBLIC>;
+  dcterms:publisher [ a foaf:Organization;
+      foaf:name "Group 04, FAIR Data Engineering 2026, University of Twente"
+    ];
+  <http://semanticscience.org/resource/SIO_000628> <http://localhost:8085/dataset/0e48302c-e451-4cb4-85a5-54d4a9a9fc7f/metrics/445c0a70d1e214e545b261559e2842f4>,
+    <http://localhost:8085/dataset/0e48302c-e451-4cb4-85a5-54d4a9a9fc7f/metrics/5d27e854a9e78eb3f663331cd47cdc13>;
+  dcterms:isPartOf <http://localhost:8085/catalog/e1017afa-0c59-4715-8545-55ab595f0c2a>;
+  dcterms:issued "2026-10-22T00:00:00"^^xsd:dateTime;
+  dcterms:modified "2026-10-22T00:00:00"^^xsd:dateTime;
+  dcterms:creator [ a foaf:Organization;
+      foaf:name "MIT Laboratory for Computational Physiology";
+      foaf:homepage <https://mimic.mit.edu>
+    ];
+  dcat:theme <http://id.nlm.nih.gov/mesh/D007362>;
+  dcat:keyword "ICU";
+  dcterms:source <https://doi.org/10.13026/dp1f-ex47>;
+  <http://www.w3.org/ns/prov#wasDerivedFrom> <https://physionet.org/content/mimic-iv-demo/2.2/>;
+  dcterms:references <http://hl7.org/fhir/R4/>, <https://w3id.org/FAIR-course-UT/2026/group04/shapes/mimic-iv>;
+  dcat:distribution <http://localhost:8085/distribution/ab76855e-a0e8-4443-ab05-5726f76b3837>,
+    <http://localhost:8085/distribution/13ad4a86-3298-4669-9281-7a3ffaefe473>, <http://localhost:8085/distribution/cbd28901-9124-4c55-9d8d-05a22bab722b>;
+  dcterms:conformsTo <http://localhost:8085/profile/2f08228e-1789-40f8-84cd-28e3288c3604> .
+
+<http://localhost:8085/dataset/0e48302c-e451-4cb4-85a5-54d4a9a9fc7f#identifier> a
+    <http://purl.org/spar/datacite/Identifier>;
+  dcterms:identifier "http://localhost:8085/dataset/0e48302c-e451-4cb4-85a5-54d4a9a9fc7f" .
+
+<http://localhost:8085/dataset/0e48302c-e451-4cb4-85a5-54d4a9a9fc7f/metrics/445c0a70d1e214e545b261559e2842f4>
+  <http://semanticscience.org/resource/SIO_000628> <https://www.ietf.org/rfc/rfc3986.txt>;
+  <http://semanticscience.org/resource/SIO_000332> <https://www.ietf.org/rfc/rfc3986.txt> .
+
+<http://localhost:8085/dataset/0e48302c-e451-4cb4-85a5-54d4a9a9fc7f/metrics/5d27e854a9e78eb3f663331cd47cdc13>
+  <http://semanticscience.org/resource/SIO_000628> <https://www.wikidata.org/wiki/Q8777>;
+  <http://semanticscience.org/resource/SIO_000332> <https://www.wikidata.org/wiki/Q8777> .
+
+<http://localhost:8085/distribution/> a ldp:DirectContainer;
+  dcterms:title "Distributions";
+  ldp:membershipResource <http://localhost:8085/dataset/0e48302c-e451-4cb4-85a5-54d4a9a9fc7f>;
+  ldp:hasMemberRelation dcat:distribution;
+  ldp:contains <http://localhost:8085/distribution/ab76855e-a0e8-4443-ab05-5726f76b3837>,
+    <http://localhost:8085/distribution/13ad4a86-3298-4669-9281-7a3ffaefe473>, <http://localhost:8085/distribution/cbd28901-9124-4c55-9d8d-05a22bab722b> .
+
+<http://localhost:8085/profile/2f08228e-1789-40f8-84cd-28e3288c3604> <http://www.w3.org/2000/01/rdf-schema#label>
+    "Dataset Profile" .

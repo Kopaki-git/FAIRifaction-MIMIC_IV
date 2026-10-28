@@ -1,0 +1,125 @@
+# FDP metadata schema 'Dataset' v1.1.0, exported from the local FAIR Data Point (FDP 1.18.2).
+# Extends the Resource schema (resource_schema.ttl), which adds title, description, publisher, version, language, licence and rights.
+@prefix :         <http://fairdatapoint.org/> .
+@prefix dash:     <http://datashapes.org/dash#> .
+@prefix dcat:     <http://www.w3.org/ns/dcat#> .
+@prefix dct:      <http://purl.org/dc/terms/> .
+@prefix sh:       <http://www.w3.org/ns/shacl#> .
+@prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
+@prefix foaf:     <http://xmlns.com/foaf/0.1/> .
+@prefix prov:     <http://www.w3.org/ns/prov#> .
+
+:DatasetShape a sh:NodeShape ;
+  sh:targetClass dcat:Dataset ;
+  sh:property [
+    sh:path dct:issued ;
+    sh:datatype xsd:dateTime ;
+    sh:maxCount 1 ;
+    dash:editor dash:DateTimePickerEditor ;
+    dash:viewer dash:LiteralViewer ;
+    sh:order 20 ;
+  ], [
+    sh:path dct:modified ;
+    sh:datatype xsd:dateTime ;
+    sh:maxCount 1 ;
+    dash:editor dash:DateTimePickerEditor ;
+    dash:viewer dash:LiteralViewer ;
+    sh:order 21 ;
+  ],  [
+    sh:path dcat:theme ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1 ;
+    dash:editor dash:URIEditor ;
+    dash:viewer dash:LabelViewer ;
+    sh:order 22 ;
+  ], [
+    sh:path dcat:contactPoint ;
+    sh:nodeKind sh:IRI ;
+    sh:maxCount 1 ;
+    dash:editor dash:URIEditor ;
+    dash:viewer dash:LabelViewer ;
+    sh:order 23 ;
+  ], [
+    sh:path dcat:keyword ;
+    sh:nodeKind sh:Literal ;
+    dash:editor dash:TextFieldEditor ;
+    dash:viewer dash:LiteralViewer ;
+    sh:order 24 ;
+  ], [
+    sh:path dcat:landingPage ;
+    sh:nodeKind sh:IRI ;
+    sh:maxCount 1 ;
+    dash:editor dash:URIEditor ;
+    dash:viewer dash:LabelViewer ;
+    sh:order 25 ;
+  ], [
+    sh:path dct:identifier ;
+    sh:name "Identifier" ;
+    sh:description "A unique, persistent identifier for the dataset (its W3ID)." ;
+    sh:datatype xsd:string ;
+    sh:minCount 1 ;
+    dash:editor dash:TextFieldEditor ;
+    dash:viewer dash:LiteralViewer ;
+    sh:order 0 ;
+  ], [
+    sh:path dct:creator ;
+    sh:name "Creator" ;
+    sh:description "The primary organization or entity responsible for creating the dataset." ;
+    sh:node :OrganizationShape ;
+    sh:minCount 1 ;
+    dash:editor dash:BlankNodeEditor ;
+    sh:order 8 ;
+  ], [
+    sh:path dct:accessRights ;
+    sh:name "Access rights" ;
+    sh:description "Who can access the data and under which conditions, as a term from the EU access-right authority (e.g. PUBLIC)." ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    dash:editor dash:URIEditor ;
+    dash:viewer dash:LabelViewer ;
+    sh:order 9 ;
+  ], [
+    sh:path dct:source ;
+    sh:name "Source dataset" ;
+    sh:description "The original dataset (DOI of the MIMIC-IV Demo on PhysioNet) from which this dataset is derived." ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1 ;
+    dash:editor dash:URIEditor ;
+    dash:viewer dash:LabelViewer ;
+    sh:order 26 ;
+  ], [
+    sh:path prov:wasDerivedFrom ;
+    sh:name "Derived from" ;
+    sh:description "Provenance: the upstream resource this dataset was derived from." ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1 ;
+    dash:editor dash:URIEditor ;
+    dash:viewer dash:LabelViewer ;
+    sh:order 27 ;
+  ], [
+    sh:path dct:references ;
+    sh:name "References" ;
+    sh:description "Standards and shapes the dataset aligns to (e.g. HL7 FHIR R4, the SHACL shapes of this project)." ;
+    sh:nodeKind sh:IRI ;
+    dash:editor dash:URIEditor ;
+    dash:viewer dash:LabelViewer ;
+    sh:order 28 ;
+  ] .
+
+:OrganizationShape a sh:NodeShape ;
+  sh:targetClass foaf:Organization ;
+  sh:property [
+    sh:path foaf:name ;
+    sh:name "Organization name" ;
+    sh:nodeKind sh:Literal ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    dash:editor dash:TextFieldEditor ;
+  ], [
+    sh:path foaf:homepage ;
+    sh:name "Homepage" ;
+    sh:nodeKind sh:IRI ;
+    sh:maxCount 1 ;
+    dash:editor dash:URIEditor ;
+  ] .
