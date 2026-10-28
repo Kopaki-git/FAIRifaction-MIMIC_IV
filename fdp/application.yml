@@ -1,0 +1,11 @@
+repository:
+  type: 4
+  graphDb:
+    url: http://graphdb:7200
+    repository: fdp
+    username: fdp
+    password: fdp
+
+instance:
+  clientUrl: http://localhost:8085
+  persistentUrl: http://localhost:8085

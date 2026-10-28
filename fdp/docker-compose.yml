@@ -1,0 +1,31 @@
+# Local FAIR Data Point, following the course's Canvas setup instructions.
+# First run: start only graphdb, create the repository and user, then start the rest.
+# FDP pinned to 1.18, the version the course names; latest (1.22) needs an extra JWT secret.
+services:
+
+    fdp:
+        image: fairdata/fairdatapoint:1.18
+        volumes:
+            - ./application.yml:/fdp/application.yml:ro
+
+    fdp-client:
+        image: fairdata/fairdatapoint-client:1.18
+        ports:
+            - 8085:80
+        environment:
+            - FDP_HOST=fdp
+
+    mongo:
+        # The course's mongo:4.0.12 is too old for FDP 1.18 (its driver needs MongoDB 4.2+).
+        image: mongo:7.0
+        ports:
+            - 27017:27017
+        volumes:
+            - ./mongo/data:/data/db
+
+    graphdb:
+        image: ontotext/graphdb:10.7.4
+        ports:
+            - 7200:7200
+        volumes:
+            - ./graphdb/data:/data

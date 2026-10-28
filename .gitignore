@@ -233,3 +233,7 @@ FAIRcourse-report_template*.dotx
 
 # Microsoft Office lock files for open documents
 ~$*
+
+# Local FAIR Data Point database files
+fdp/mongo/
+fdp/graphdb/
