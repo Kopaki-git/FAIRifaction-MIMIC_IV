@@ -169,7 +169,62 @@ The metadata is already largely FAIR. The gaps are in the data: identifiers and 
 
 ### 3.2 Semantic data model
 
-_To do._
+![Figure 1](../docs/figures/semantic_model_overview.svg)
+
+**Figure 1.** Resource-level semantic model.
+
+Figure 1 shows the six resource kinds and the references between them. Every resource except Location refers to its patient. Each observation also refers to its ICU encounter, which is part of a hospital encounter. The ICU encounter refers to each care unit it passed through, and each of those references carries its own period. The hospital encounter refers to its first-ranked diagnosis, with rank 1 and the billing role. Elements in orange hold MIMIC source values, and those in blue hold standard terminology. The numbers give how many resources of each kind the graph contains.
+
+**Concept URIs**
+
+The model defines no classes or properties of its own. Its URIs come from three sources: FHIR R4 for classes and properties, standard terminologies for the coded values, and the MIMIC-FHIR implementation guide for the MIMIC source values.
+
+The classes and properties are those of FHIR R4 (prefix fhir: = http://hl7.org/fhir/). The six resource kinds of Figure 1 are instances of five FHIR classes (Table 4). Every property is a FHIR R4 RDF predicate, named fhir:\<Type\>.\<element\> after the element path in FHIR's resource definitions, for example fhir:Observation.code or fhir:Encounter.location.period. Nested FHIR datatypes such as CodeableConcept, Coding, Quantity, Period and Identifier are blank nodes with their own predicates, such as fhir:Coding.system.
+
+Coded values are recorded as FHIR Codings, each a code-system URI with a code, rather than as concept IRIs. The standard codes, shown in blue in Figure 1, come from the terminologies in Table 5. The MIMIC source values, shown in orange, keep the code and identifier systems of the MIMIC-FHIR implementation guide (base http://mimic.mit.edu/fhir/mimic/), for example CodeSystem/mimic-chartevents-d-items for item identifiers.
+
+Where FHIR R4 has no element for a source value, the model uses FHIR extensions. An extension is FHIR's mechanism for adding a data element that the base resource does not define, and it is identified by a URL that refers to its formal definition. Two extensions carry the MIMIC warning flag, for which FHIR has no element, and the verbatim admission type, which the mapped class and priority do not preserve in full. Their URLs lie under the project's W3ID namespace and appear in the data as values, not as new classes or properties. The extensions are provisional: their URLs resolve to the project documentation rather than to formal FHIR definitions (StructureDefinitions).
+
+**Table 4.** Classes.
+
+| Resource | Class | Instances |
+|---|---|---:|
+| Patient | fhir:Patient | 94 |
+| Hospital encounter | fhir:Encounter, class IMP | 121 |
+| ICU encounter | fhir:Encounter, class ACUTE | 133 |
+| Observation | fhir:Observation | 2,501 |
+| Condition | fhir:Condition | 121 |
+| Location | fhir:Location | 9 |
+
+**Table 5.** Standard terminologies. "hl7:" abbreviates http://terminology.hl7.org/CodeSystem/.
+
+| Used for | Vocabulary | System URI | Codes |
+|---|---|---|---|
+| Measurement type | LOINC | http://loinc.org | 8867-4 heart rate; 9279-1 respiratory rate; 2708-6 oxygen saturation, with 59408-5 for pulse oximetry |
+| Units | UCUM | http://unitsofmeasure.org | /min; % |
+| Observation category | HL7 | hl7:observation-category | vital-signs |
+| Encounter class | HL7 v3 ActCode | hl7:v3-ActCode | IMP inpatient; ACUTE ICU stay |
+| Admission priority | HL7 v3 ActPriority | hl7:v3-ActPriority | EL elective; UR urgent; EM emergency |
+| Care-unit type | HL7 v3 RoleCode | hl7:v3-RoleCode | ICU; NS neurosurgery unit; HU hospital unit; CCU coronary care unit |
+| Care-unit type | SNOMED CT | http://snomed.info/sct | 441994008 medical ICU; 418433008 surgical ICU |
+| Diagnosis role | HL7 | hl7:diagnosis-role | billing |
+| Condition category | HL7 | hl7:condition-category | encounter-diagnosis |
+| Diagnosis | ICD-9-CM, ICD-10-CM | http://hl7.org/fhir/sid/icd-9-cm, http://hl7.org/fhir/sid/icd-10-cm | Canonical dotted codes, e.g. 414.01 |
+
+The model was compared with MIMIC-FHIR element by element, using the mapping tables, profiles and examples of its implementation guide (KinD Lab, 2024). The resource types, statuses, the ICU encounter's partOf link, the encounter-diagnosis category and the identifier systems follow MIMIC-FHIR. They are therefore not claimed as contributions. Table 6 lists the choices where the model differs.
+
+**Table 6.** Modelling choices that differ from MIMIC-FHIR for the scoped data.
+
+| Modelling choice | MIMIC-FHIR | This model | Listed as future work in the IG |
+|---|---|---|---|
+| *Terminology* | | | |
+| Measurement code, unit and category of ICU observations | MIMIC item code; source unit string as both unit and code; MIMIC category | MIMIC item code plus LOINC; source unit plus UCUM; HL7 vital-signs category | Yes: mapping MIMIC terminology to US Core terminology |
+| Diagnosis code | MIMIC-specific ICD-9 and ICD-10 code systems | MIMIC code plus canonical ICD-9-CM or ICD-10-CM code | Yes: canonical ICD code systems, intended to replace the MIMIC ones; here they are added alongside |
+| Care-unit type | Name only, with a fixed physical type "ward" | HL7 role code as a broader classification, plus a specific SNOMED CT code for the medical and surgical ICUs | No |
+| *Clinical distinctions* | | | |
+| Care units within an ICU stay | First care unit for the whole stay; the full transfer history is kept on the hospital encounter only | Each care-unit interval on the ICU encounter, with its own period | No |
+| Admission class and urgency | Verbatim admission type in both class and priority | Class inpatient (IMP); priority from HL7 where defensible (elective, urgent, emergency); verbatim admission type kept as an extension | No |
+| First-ranked diagnosis | Condition linked to its encounter; seq_num used only to build the identifier | Encounter.diagnosis with rank 1 and the billing role | No |
 
 ### 3.3 Data triplification
 
