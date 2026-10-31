@@ -126,7 +126,46 @@ The questions in the first group test whether the semantic model captures the st
 
 ### 3.1 Initial FAIRness assessment
 
-_To do._
+The original dataset was assessed as published on PhysioNet: the MIMIC-IV Demo v2.2 release and its metadata, consisting of the DOI with its DataCite record and the landing page with embedded schema.org JSON-LD. The criteria follow the template, extended through I1–R1.3. Each criterion is rated against the corresponding indicators of the RDA FAIR Data Maturity Model (RDA FAIR Data Maturity Model Working Group, 2020), given in brackets in the notes. A criterion is rated yes if all its indicators are met, no if none are, and partially otherwise. The ratings are a self-assessment by the project team, not an external evaluation.
+
+**Table 2.** Initial assessment of the metadata.
+
+| Principle | Criteria | Conformance | Note |
+|---|---|---|---|
+| F1 | Globally unique identifier | yes | DOI (F1-02M) |
+| F1 | Persistent identifier | yes | DOI (F1-01M) |
+| F2 | Has metadata | yes | DataCite record, landing page, schema.org JSON-LD |
+| F2 | Has rich metadata | partially | Title, description, creators, version, date and licence, but no keywords or subjects (F2-01M) |
+| F3 | Has data identifier in metadata | partially | The DOI resolves to the landing page, not to the data files (F3-01M) |
+| F3 | Has data identifier with clear predicate in metadata | partially | schema:distribution points to the landing page's file list (F3-01M) |
+| F4 | Indexed/registered in search resource | yes | Registered with DataCite; JSON-LD for dataset search engines (F4-01M) |
+| A1 | Has resolution protocol | yes | The DOI resolves over HTTPS, to the landing page or, by content negotiation, to JSON-LD (A1-03M, A1-04M) |
+| A1.1 | Protocol is open, free and universally implementable | yes | HTTPS (A1.1-01M) |
+| A1.2 | Protocol has authentication and authorisation mechanisms | N/A | Open access |
+| A2 | Metadata has longer persistency than data | yes | The DataCite record persists independently of PhysioNet (A2-01M) |
+| I1 | Formal, accessible, shared knowledge representation | yes | schema.org JSON-LD and DataCite (I1-01M, I1-02M) |
+| I2 | Uses FAIR vocabularies | yes | schema.org, DataCite (I2-01M) |
+| I3 | Includes qualified references | partially | Qualified reference to the concept DOI (IsVersionOf), but no qualified reference from the metadata to the data (I3-01M to I3-04M) |
+| R1 | Plurality of accurate, relevant attributes | yes | (R1-01M) |
+| R1.1 | Clear, accessible data usage licence | yes | ODbL 1.0 in the JSON-LD and on the landing page, not in the DataCite record (R1.1-01M to R1.1-03M) |
+| R1.2 | Detailed provenance | partially | Origin and deidentification described in text; no provenance vocabulary (R1.2-01M, R1.2-02M) |
+| R1.3 | Meets domain-relevant community standards | yes | DataCite and schema.org (R1.3-01M, R1.3-02M) |
+
+**Table 3.** Initial assessment of the data. Principles F2–F4, A2 and R1–R1.2 concern metadata only and are omitted.
+
+| Principle | Criteria | Conformance | Note |
+|---|---|---|---|
+| F1 | Globally unique identifier | partially | Only the dataset as a whole has a DOI; files have plain URLs and records have local MIMIC keys (F1-02D) |
+| F1 | Persistent identifier | partially | As above (F1-01D) |
+| A1 | Has resolution protocol | partially | Files download over HTTPS, but the DOI resolves to a web page, not to the data (A1-03D, A1-04D, A1-05D) |
+| A1.1 | Protocol is open, free and universally implementable | yes | HTTPS (A1.1-01D) |
+| A1.2 | Protocol has authentication and authorisation mechanisms | N/A | Open access (A1.2-01D) |
+| I1 | Formal, accessible, shared knowledge representation | no | CSV tables; meaning is defined only in column names and documentation (I1-01D, I1-02D) |
+| I2 | Uses FAIR vocabularies | partially | ICD-9 and ICD-10 codes are standard; item identifiers, care-unit labels and unit strings are local (I2-01D) |
+| I3 | Includes qualified references | partially | Tables are linked by foreign keys, but relationships are implicit in column names (I3-01D, I3-02D) |
+| R1.3 | Meets domain-relevant community standards | partially | MIMIC's documented schema is a de facto standard in critical-care research, not a formal one (R1.3-01D, R1.3-02D) |
+
+The metadata is already largely FAIR. The gaps are in the data: identifiers and resolution stop at the level of the dataset, and the meaning of the data depends on MIMIC-local codes and documentation rather than a formal representation.
 
 ### 3.2 Semantic data model
 
@@ -161,3 +200,5 @@ Johnson, A., Bulgarelli, L., Pollard, T., Horng, S., Celi, L. A., & Mark, R. (20
 KinD Lab. (2024). *MIMIC Implementation Guide* (version 1.3.0, draft). HL7 FHIR R4. https://kind-lab.github.io/mimic-fhir/
 
 Pollard, T., Moody, B. E., Lehman, L., Gow, B., Fernandes, C., Xie, C., Johnson, A., Mark, R. G., & Heldt, T. (2026). PhysioNet as a global platform for biomedical research. *Nature Health*. https://doi.org/10.1038/s44360-026-00096-z
+
+RDA FAIR Data Maturity Model Working Group. (2020). *FAIR Data Maturity Model: Specification and guidelines*. Research Data Alliance. https://doi.org/10.15497/RDA00050
