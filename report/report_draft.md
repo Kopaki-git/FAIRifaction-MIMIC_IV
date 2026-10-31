@@ -52,23 +52,75 @@ The rest of the MIMIC-IV Demo is out of scope.
 
 ### 2.3 Target stakeholders
 
-_To do._
+The FAIRification was carried out by the two-member project team, which covered the roles of a FAIRification project between them:
+
+| Role | Contribution |
+|---|---|
+| Domain interpretation | Reading the MIMIC documentation and deciding which source meanings support a standard mapping |
+| Semantic modelling | FHIR R4-aligned model and terminology mappings |
+| FAIR expertise | Metadata schema and record, persistent identifiers, publication |
+| Software engineering | Extraction, RDF generation and its tests, FAIR Data Point setup |
+
+The course teacher contributed FAIR expertise from outside the team. The teacher confirmed the persistent-identifier namespace, advised publishing all three distributions, and advised documenting the semantic model with a diagram rather than an ontology file, because the model reuses existing vocabularies.
+
+No clinical domain expert was involved. This gap was addressed by justifying each mapping from MIMIC's documentation and the terminology sources, and by leaving inexact mappings out rather than forcing them.
 
 ### 2.4 Reuse stakeholders
 
-_To do._
+1. **Critical-care researchers.** Reuse goal: to compare early ICU vital signs across stays by diagnosis, care unit and admission urgency, without learning MIMIC's local codes.
+2. **Data scientists developing clinical prediction models.** Reuse goal: to prototype on coded vital signs with clinical context before applying for credentialed access to the full database.
+3. **Health-data integrators.** Reuse goal: to combine the extract with other clinical sources through shared codes for measurements, units and diagnoses.
+4. **Educators and students** in clinical data science and FAIR data engineering. Reuse goal: a small, open, worked example of FAIRifying clinical data.
+
+The competency questions in Section 2.7 are derived from these reuse goals.
 
 ### 2.5 FAIRification requirements
 
-_To do._
+1. Represent all clinical entities with FHIR R4 resource types and predicates, and define no new classes or properties. (goal 1)
+2. Keep every MIMIC identifier, code and recorded value unchanged, and add standard codes next to them rather than in their place. (goals 2, 6)
+3. Add a standard code only where its meaning matches the source. Record broader classifications as broader, not as equivalents, and leave values without a defensible mapping unmapped. (goals 2, 3)
+4. Represent the care-unit intervals of each ICU stay, the admission class and urgency as separate elements, and the rank and billing role of the diagnosis. (goal 3)
+5. Mint persistent identifiers under the course W3ID namespace for the dataset, its distributions and every resource, built deterministically from MIMIC keys. (goal 4)
+6. Describe the dataset and its distributions in DCAT, with licence, access rights and provenance. Validate the description against SHACL shapes and publish it in a FAIR Data Point. License the derived resource under ODbL 1.0, as the source licence requires for derived databases. (goal 5)
+7. Generate the RDF with a script that stops on any source value outside the approved mappings, and check its output against the source. (goal 6)
+8. Assert alignment with FHIR R4, not conformance, unless conformance has been validated. (goals 1, 6)
 
 ### 2.6 Semantic types
 
-_To do._
+| Semantic type | Data elements |
+|---|---|
+| Patient | subject_id |
+| Hospital admission | hadm_id, admittime, dischtime |
+| Admission urgency | admission_type |
+| ICU stay | stay_id, intime, outtime |
+| Care unit | careunit |
+| Care-unit interval | careunit, intime, outtime (per interval) |
+| Vital-sign measurement type: heart rate, respiratory rate, SpO2 | itemid, measurement_label |
+| Measured value and unit | valuenum, valueuom |
+| Observation time | charttime |
+| Warning flag | warning |
+| Diagnosis | icd_code, icd_version, long_title |
+| Diagnosis rank | seq_num |
+
+The extract also keeps transfer_id and eventtype, but they are given no semantic type and are not represented in the graph.
 
 ### 2.7 Competency questions
 
-_To do._
+The questions in the first group test whether the semantic model captures the structure of the source. Those in the second test whether the resource serves the reuse goals in Section 2.4.
+
+*Structure of the data*
+
+1. Which observations belong to a given ICU stay?
+2. To which patient and hospital admission does an observation belong?
+3. What does an observation measure, in MIMIC terms and in standard terms, and what are its value, unit and time?
+
+*Reuse*
+
+4. What is the mean heart rate in the first four hours of ICU stays, for each first-ranked billing diagnosis?
+5. Which care units did each ICU stay pass through, and during which intervals?
+6. How does early respiratory rate differ between emergency, urgent and elective admissions?
+7. How many observations are there of each measurement type, identified by its LOINC code?
+8. Which observations carry a MIMIC warning flag, and in what clinical context: measurement, value, unit, diagnosis and admission type?
 
 ## 3 FAIRification process
 
