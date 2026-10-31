@@ -228,11 +228,123 @@ The model was compared with MIMIC-FHIR element by element, using the mapping tab
 
 ### 3.3 Data triplification
 
-_To do._
+The RDF was generated with a Python script using the RDFLib library, rather than with OpenRefine. OpenRefine holds one table per project, and data from another project can only be copied into it as matching values (OpenRefine, n.d.). The five linked tables would therefore have had to be flattened into one table or split into five separate projects. A script keeps the links between them.
+
+The script reads the five tables and builds one RDF resource per patient, hospital admission, ICU stay, observation, diagnosis and care unit, following the model in Section 3.2. Identifiers are built deterministically from the MIMIC keys under the project's W3ID namespace, so that ICU stay 30057454, for example, becomes data:icu-encounter-30057454. Nested FHIR datatypes are written as blank nodes. Every coded source value is looked up in the approved mapping tables. If a value falls outside them, the script stops with an error rather than falling back to a default. Listing 1 shows one resulting observation.
+
+```turtle
+data:observation-30057454-21711114T102700-220045 a fhir:Observation ;
+    fhir:DomainResource.extension [ fhir:Extension.url "https://w3id.org/FAIR-course-UT/2026/group04/fhir/StructureDefinition/observation-mimic-warning" ;
+            fhir:Extension.valueBoolean false ] ;
+    fhir:Observation.category [ fhir:CodeableConcept.coding [ fhir:Coding.code "vital-signs" ;
+                    fhir:Coding.system "http://terminology.hl7.org/CodeSystem/observation-category" ] ] ;
+    fhir:Observation.code [ fhir:CodeableConcept.coding [ fhir:Coding.code "8867-4" ;
+                    fhir:Coding.system "http://loinc.org" ],
+                [ fhir:Coding.code "220045" ;
+                    fhir:Coding.display "Heart Rate" ;
+                    fhir:Coding.system "http://mimic.mit.edu/fhir/mimic/CodeSystem/mimic-chartevents-d-items" ] ] ;
+    fhir:Observation.effectiveDateTime "2171-11-14T10:27:00"^^xsd:dateTime ;
+    fhir:Observation.encounter data:icu-encounter-30057454 ;
+    fhir:Observation.status "final" ;
+    fhir:Observation.subject data:patient-10023117 ;
+    fhir:Observation.valueQuantity [ fhir:Quantity.code "/min" ;
+            fhir:Quantity.system "http://unitsofmeasure.org" ;
+            fhir:Quantity.unit "bpm" ;
+            fhir:Quantity.value 114.0 ] .
+```
+
+**Listing 1.** One heart-rate observation in Turtle. The prefix data: abbreviates https://w3id.org/FAIR-course-UT/2026/group04/data#.
+
+The observation carries the MIMIC item code 220045 with its label next to the LOINC code 8867-4, and the source unit "bpm" next to the UCUM code /min. It refers to its patient and its ICU encounter by their persistent identifiers.
+
+An automated test suite checks the output: 27 tests for the RDF, all passing. They check that:
+
+- two independent RDF parsers, RDFLib and Oxigraph, read the file;
+- resource counts match the source;
+- every reference points to the right resource;
+- values (including their exact lexical form), units, times and identifiers are preserved;
+- codings match the mapping tables, which were transcribed for the tests independently of the script;
+- edge cases are handled, such as the two LOINC codes for SpO2 and stays that pass through several care units.
+
+A reproducibility test regenerates the graph and compares it with the published file after RDFC-1.0 canonicalization. A negative control confirms that the comparison detects a change. The resulting graph has 72,725 triples.
+
+The output is RDF aligned with FHIR R4 that uses FHIR's predicates, not strict FHIR RDF. It omits FHIR RDF's primitive-value wrappers and its reference and ordering machinery, and it has not been validated against FHIR's ShEx schemas. Timestamps carry no timezone, because MIMIC's shifted timestamps have none. FHIR R4 requires one, so this is a conformance gap. The tests therefore establish fidelity to the source and to the model, not FHIR conformance.
 
 ### 3.4 Semantic metadata model
 
-_To do._
+The metadata describes the extract as a DCAT dataset with three distributions (Figure 2). The metadata model is a set of SHACL shapes, built with the Contour editor recommended in the course, and the metadata record is an instance of it: the record was validated against the shapes and conforms. The model reuses DCAT for the dataset and its distributions, Dublin Core Terms for descriptive, legal and temporal properties, FOAF for organizations, and PROV-O for provenance. Property values that are IRIs come from controlled vocabularies or external resources: the ODbL licence, the EU access-rights table, the ISO 639-1 language codes, MeSH for the theme, IANA media types, and the DOI and PhysioNet page of the source release.
+
+![Figure 2](../docs/figures/semantic_metadata_model_overview.svg)
+
+**Figure 2.** The metadata model, with the values of the record.
+
+The creator is modelled as a single organization, the MIT Laboratory for Computational Physiology, which maintains MIMIC, rather than as the individual authors of the Demo. The publisher is the project group. Provenance is stated in two ways: dct:source gives the DOI of the source release, and prov:wasDerivedFrom gives its PhysioNet page in PROV-O, a cross-community provenance vocabulary. dct:references links the FHIR R4 specification and the project's shapes. dct:conformsTo is deliberately not used, because conformance to FHIR has not been validated (Section 3.3).
+
+Three node shapes target dcat:Dataset, dcat:Distribution and foaf:Organization. A fourth requires every distribution with a download URL to also have a title and a media type. Table 7 lists each term with its use in the record and its constraint, and Listing 2 shows an excerpt of the shapes.
+
+The FAIR Data Point validates records against its own SHACL schemas. Its default Dataset and Distribution schemas were extended with the project's properties: identifier, creator, access rights, source, derivation and references for datasets, and format for distributions. The FDP's media-type property was changed from a literal to an IRI to match the project shapes. Because the FDP requires date-times, the record's dates are stored there as date-times.
+
+**Table 7.** Terms of the metadata model. Prefixes: dcat: = http://www.w3.org/ns/dcat#, dct: = http://purl.org/dc/terms/, foaf: = http://xmlns.com/foaf/0.1/, prov: = http://www.w3.org/ns/prov#.
+
+| Term | Use in the record | Constraint |
+|---|---|---|
+| *Classes* | | |
+| dcat:Dataset | The described dataset | Target class of the dataset shape |
+| dcat:Distribution | One per available form of the data | Target class of the distribution shape |
+| foaf:Organization | Creator and publisher | Target class of the organization shape |
+| *Dataset* | | |
+| dct:identifier | The dataset's W3ID | string, 1 or more |
+| dct:title | Dataset title | string, exactly 1 |
+| dct:description | Contents, scope and formats | string, 1 or more, at most 2,000 characters |
+| dcat:keyword | Free-text tag ("ICU") | string, 1 or more |
+| dcat:theme | MeSH concept D007362 | IRI, optional |
+| dct:issued, dct:modified | Release and last-change dates | xsd:date, exactly 1 each |
+| dcat:version | Version of the extract | string, exactly 1 |
+| dct:license | ODbL 1.0 | IRI, 1 or more |
+| dct:accessRights | EU access right PUBLIC | exactly 1 |
+| dct:language | English (ISO 639-1) | IRI, 1 or more |
+| dct:creator | MIT Laboratory for Computational Physiology | organization shape, 1 or more |
+| dct:publisher | Group 04, University of Twente | organization shape, 1 or more |
+| dct:source | DOI of the MIMIC-IV Demo | IRI, 1 or more |
+| prov:wasDerivedFrom | PhysioNet page of the Demo | IRI, 1 or more |
+| dct:references | FHIR R4 and the project shapes | IRI, optional |
+| dcat:distribution | The three distributions | distribution shape, 1 or more |
+| *Organization* | | |
+| foaf:name | Organization name | string, 1 or more |
+| foaf:homepage | Organization website | IRI, optional |
+| *Distribution* | | |
+| dct:title | Distribution title | string, optional; required with a download URL |
+| dcat:accessURL | W3ID of the distribution | IRI, 1 or more |
+| dcat:downloadURL | Direct download, the same W3ID | IRI, at most 1 |
+| dcat:mediaType | IANA media type | IRI, at most 1; required with a download URL |
+| dct:format | Format label (Turtle, CSV) | string, optional |
+
+```turtle
+dcat:Dataset
+  a sh:NodeShape ;
+  sh:targetClass dcat:Dataset ;
+  sh:property [
+    sh:path dct:license ;
+    sh:nodeKind sh:IRI ;
+    sh:minCount 1
+  ] ;
+  sh:property [
+    sh:path dct:creator ;
+    sh:node foaf:Organization ;
+    sh:minCount 1
+  ] .
+
+foaf:Organization
+  a sh:NodeShape ;
+  sh:targetClass foaf:Organization ;
+  sh:property [
+    sh:path foaf:name ;
+    sh:datatype xsd:string ;
+    sh:minCount 1
+  ] .
+```
+
+**Listing 2.** Excerpt of the SHACL shapes, abridged: names, descriptions, ordering and editor annotations are omitted.
 
 ### 3.5 Metadata and data publication
 
@@ -253,6 +365,8 @@ _To do._
 Johnson, A., Bulgarelli, L., Pollard, T., Horng, S., Celi, L. A., & Mark, R. (2023). *MIMIC-IV Clinical Database Demo* (version 2.2). PhysioNet. RRID:SCR_007345. https://doi.org/10.13026/dp1f-ex47
 
 KinD Lab. (2024). *MIMIC Implementation Guide* (version 1.3.0, draft). HL7 FHIR R4. https://kind-lab.github.io/mimic-fhir/
+
+OpenRefine. (n.d.). *Starting a project*. OpenRefine documentation. https://openrefine.org/docs/manual/starting
 
 Pollard, T., Moody, B. E., Lehman, L., Gow, B., Fernandes, C., Xie, C., Johnson, A., Mark, R. G., & Heldt, T. (2026). PhysioNet as a global platform for biomedical research. *Nature Health*. https://doi.org/10.1038/s44360-026-00096-z
 

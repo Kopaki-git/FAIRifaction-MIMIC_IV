@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1045 370" width="1045" height="370" font-family="Helvetica, Arial, sans-serif">
+  <!-- Overview of the metadata record metadata/mimic-iv-RDF_metadata.ttl, which conforms to metadata/mimic-iv-shacl_metadata.ttl. Same visual language as semantic_model_overview.svg. -->
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4a5568"/>
+    </marker>
+    <style>
+      .box { fill: #f5f7fa; stroke: #4a5568; stroke-width: 1.2; }
+      .head { fill: #2d3e50; }
+      .title { fill: #ffffff; font-size: 14px; font-weight: bold; }
+      .count { fill: #c8d3df; font-size: 12px; }
+      .key { fill: #5a6472; font-size: 12px; }
+      .val { fill: #1a202c; font-size: 12px; }
+      .std { fill: #1f5fa8; font-weight: bold; }
+      .rule { stroke: #c8d3df; stroke-width: 1; }
+      .edge { stroke: #4a5568; stroke-width: 1.4; fill: none; marker-end: url(#arrow); }
+      .elabel { fill: #1a202c; font-size: 12px; font-style: italic; }
+      .nested { fill: #1a202c; font-size: 11px; }
+      .legend { fill: #1a202c; font-size: 11px; }
+    </style>
+  </defs>
+
+  <rect width="1045" height="370" fill="#ffffff"/>
+
+  <!-- Edges (drawn first so boxes sit on top) -->
+  <path class="edge" d="M350,90 H252"/>
+  <text class="elabel" x="300" y="82" text-anchor="middle">dct:creator</text>
+
+  <path class="edge" d="M350,275 H252"/>
+  <text class="elabel" x="300" y="267" text-anchor="middle">dct:publisher</text>
+
+  <path class="edge" d="M680,120 H798"/>
+  <text class="elabel" x="740" y="112" text-anchor="middle">dcat:distribution</text>
+
+  <!-- Creator -->
+  <rect class="box" x="20" y="25" width="230" height="132" rx="4"/>
+  <path class="head" d="M24,25 H246 A4,4 0 0 1 250,29 V51 H20 V29 A4,4 0 0 1 24,25 z"/>
+  <text class="title" x="32" y="43">foaf:Organization</text>
+  <text class="key" x="32" y="71">foaf:name</text>
+  <text class="val" x="44" y="88">MIT Laboratory for</text>
+  <text class="val" x="44" y="105">Computational Physiology</text>
+  <text class="key" x="32" y="127">foaf:homepage</text>
+  <text class="val" x="44" y="144"><tspan class="std">mimic.mit.edu</tspan></text>
+
+  <!-- Publisher -->
+  <rect class="box" x="20" y="200" width="230" height="150" rx="4"/>
+  <path class="head" d="M24,200 H246 A4,4 0 0 1 250,204 V226 H20 V204 A4,4 0 0 1 24,200 z"/>
+  <text class="title" x="32" y="218">foaf:Organization</text>
+  <text class="key" x="32" y="246">foaf:name</text>
+  <text class="val" x="44" y="263">Group 04, FAIR Data</text>
+  <text class="val" x="44" y="280">Engineering 2026,</text>
+  <text class="val" x="44" y="297">University of Twente</text>
+  <text class="key" x="32" y="319">foaf:homepage</text>
+  <text class="key" x="44" y="336">(none given)</text>
+
+  <!-- Dataset -->
+  <rect class="box" x="350" y="25" width="330" height="318" rx="4"/>
+  <path class="head" d="M354,25 H676 A4,4 0 0 1 680,29 V51 H350 V29 A4,4 0 0 1 354,25 z"/>
+  <text class="title" x="362" y="43">dcat:Dataset</text>
+  <text class="count" x="668" y="43" text-anchor="end">…/dataset/mimic-iv</text>
+  <text class="key" x="362" y="71">dct:identifier</text>
+  <text class="val" x="500" y="71">W3ID (string)</text>
+  <text class="key" x="362" y="90">dct:title</text>
+  <text class="val" x="500" y="90">text</text>
+  <text class="key" x="362" y="109">dct:description</text>
+  <text class="val" x="500" y="109">text</text>
+  <text class="key" x="362" y="128">dcat:keyword</text>
+  <text class="val" x="500" y="128">"ICU"</text>
+  <text class="key" x="362" y="147">dcat:version</text>
+  <text class="val" x="500" y="147">"1.0"</text>
+  <text class="key" x="362" y="166">dct:issued</text>
+  <text class="val" x="500" y="166">2026-10-22 (xsd:date)</text>
+  <text class="key" x="362" y="185">dct:modified</text>
+  <text class="val" x="500" y="185">2026-10-22 (xsd:date)</text>
+  <line class="rule" x1="362" y1="197" x2="668" y2="197"/>
+  <text class="key" x="362" y="215">dct:license</text>
+  <text class="val" x="500" y="215"><tspan class="std">ODbL 1.0</tspan></text>
+  <text class="key" x="362" y="234">dct:accessRights</text>
+  <text class="val" x="500" y="234"><tspan class="std">EU access right: PUBLIC</tspan></text>
+  <text class="key" x="362" y="253">dct:language</text>
+  <text class="val" x="500" y="253"><tspan class="std">ISO 639-1: en</tspan></text>
+  <text class="key" x="362" y="272">dcat:theme</text>
+  <text class="val" x="500" y="272"><tspan class="std">MeSH D007362</tspan></text>
+  <text class="key" x="362" y="291">dct:source</text>
+  <text class="val" x="500" y="291"><tspan class="std">DOI 10.13026/dp1f-ex47</tspan></text>
+  <text class="key" x="362" y="310">prov:wasDerivedFrom</text>
+  <text class="val" x="500" y="310"><tspan class="std">PhysioNet Demo v2.2</tspan></text>
+  <text class="key" x="362" y="329">dct:references</text>
+  <text class="val" x="500" y="329"><tspan class="std">FHIR R4</tspan>, project shapes</text>
+
+  <!-- Distribution -->
+  <rect class="box" x="800" y="25" width="225" height="216" rx="4"/>
+  <path class="head" d="M804,25 H1021 A4,4 0 0 1 1025,29 V51 H800 V29 A4,4 0 0 1 804,25 z"/>
+  <text class="title" x="812" y="43">dcat:Distribution</text>
+  <text class="count" x="1013" y="43" text-anchor="end">3</text>
+  <text class="key" x="812" y="71">dct:title</text>
+  <text class="val" x="927" y="71">text</text>
+  <text class="key" x="812" y="90">dct:format</text>
+  <text class="val" x="927" y="90">"Turtle", "CSV"</text>
+  <text class="key" x="812" y="109">dcat:accessURL</text>
+  <text class="val" x="927" y="109">W3ID</text>
+  <text class="key" x="812" y="128">dcat:downloadURL</text>
+  <text class="val" x="927" y="128">W3ID</text>
+  <text class="key" x="812" y="147">dcat:mediaType</text>
+  <text class="val" x="927" y="147"><tspan class="std">IANA type</tspan></text>
+  <line class="rule" x1="812" y1="159" x2="1013" y2="159"/>
+  <text class="key" x="812" y="177">instances</text>
+  <text class="nested" x="812" y="194">…/rdf: Turtle, <tspan class="std">text/turtle</tspan></text>
+  <text class="nested" x="812" y="211">…/csv: CSV, <tspan class="std">application/zip</tspan></text>
+  <text class="nested" x="812" y="228">…/source: CSV, <tspan class="std">application/zip</tspan></text>
+
+  <!-- Legend -->
+  <text class="legend" x="800" y="272" font-weight="bold">Legend</text>
+  <text class="legend" x="800" y="290"><tspan class="std">blue</tspan>: IRI from a controlled vocabulary</text>
+  <text class="legend" x="800" y="305">or an external resource</text>
+  <text class="legend" x="800" y="322">black: literal or project W3ID</text>
+  <path class="edge" d="M800,336 H832"/>
+  <text class="legend" x="840" y="340">property linking two nodes</text>
+</svg>
