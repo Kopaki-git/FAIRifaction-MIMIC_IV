@@ -113,9 +113,26 @@ The previous audit established historical validity for the selected codes, inclu
 
 `careunit_intervals.transfer_id` and `eventtype` remain in the canonical input tables but are not modelled as clinical resources or properties. In particular, a transfer event is not automatically promoted to an extra Encounter or physical Location.
 
-The project's intended semantic added value beyond the existing MIMIC-FHIR baseline consists primarily of defensible standard codings, more faithful time-resolved care settings, separation of hospital setting and admission urgency, canonical ICD coding, and explicit billed-diagnosis role/rank. **These are intended improvements, not blanket claims that every mapping is novel or independently validated.**
+The project's intended semantic added value beyond the existing MIMIC-FHIR baseline consists primarily of defensible standard codings, more faithful time-resolved care settings, separation of hospital setting and admission urgency, canonical ICD coding, and explicit billed-diagnosis role/rank. These improvements were checked against the MIMIC-FHIR implementation guide on 31 October 2026 (below). **They are still not blanket claims that every mapping is novel or independently validated.**
 
 RDF syntactic validity, source-to-graph completeness, URI resolution, and strict FHIR instance conformance are separate implementation/publication questions and are not established by this provenance document.
+
+### 9.1 Comparison with the MIMIC-FHIR implementation guide 1.3.0
+
+Checked against the guide's mapping tables, profiles (StructureDefinition JSON), example resources, Terminology Guide and Future Work pages (KinD Lab, build of 2024-02-08).
+
+| Element | MIMIC-FHIR 1.3.0 | This model | Listed as future work in the guide |
+|---|---|---|---|
+| ICU observation code | `mimic-chartevents-d-items` only (required binding) | MIMIC item code + LOINC | Yes: ConceptMaps from MIMIC to US Core terminology |
+| ICU observation unit | `valueuom` as both `unit` and `code` | Source unit + UCUM | Same item (US Core vital signs require UCUM) |
+| ICU observation category | `mimic-observation-category` | HL7 `vital-signs` | Same item |
+| Diagnosis code | Custom `mimic-diagnosis-icd9/10` | MIMIC code + canonical ICD-9-CM / ICD-10-CM | Yes: canonical ICD code systems "in place of" the custom ones |
+| Care-unit type | `Location.name` + fixed `physicalType` "wa" | HL7 role code (broader) + SNOMED CT for MICU/SICU | No |
+| Care units of an ICU stay | ICU encounter: `first_careunit`, period = min/max transfer times; full transfer history only on the hospital encounter | Each care-unit interval on the ICU encounter | No |
+| Admission class / urgency | `admission_type` verbatim in both `Encounter.class` and `Encounter.priority` | `IMP` class; HL7 priority where defensible; verbatim value as extension | No |
+| Diagnosis rank and role | `seq_num` used only in the Condition id; no `Encounter.diagnosis` | `Encounter.diagnosis` with `rank = 1`, `use = billing` | No |
+
+LOINC vital-signs coding does exist in MIMIC-FHIR, but only in its MIMIC-ED vital-signs profile, not for ICU chartevents.
 
 ## 10. Source basis and verification boundaries
 
@@ -123,6 +140,7 @@ The audited canonical model identifies the following primary references; they re
 
 - [MIMIC-IV documentation](https://mimic.mit.edu/docs/iv/) — source table semantics, code values, and timing.
 - [Published MIMIC-FHIR mappings](https://kind-lab.github.io/mimic-fhir/mimic-fhir-mappings.html) — pre-existing FHIR mapping baseline and conversion policies.
+- [MIMIC-FHIR Future Work](https://kind-lab.github.io/mimic-fhir/future-work.html) and [Terminology Guide](https://kind-lab.github.io/mimic-fhir/terminology-guide.html): the deferred terminology mapping and canonical ICD adoption.
 - [FHIR R4 Observation](https://hl7.org/fhir/R4/observation.html), [Vital Signs](https://hl7.org/fhir/R4/observation-vitalsigns.html), [Encounter](https://hl7.org/fhir/R4/encounter.html), [Location](https://hl7.org/fhir/R4/location.html), and [Condition](https://hl7.org/fhir/R4/condition.html) — resource structures and terminology roles.
 - [FHIR R4 Extensibility](https://hl7.org/fhir/R4/extensibility.html) and [FHIR R4 RDF](https://hl7.org/fhir/R4/rdf.html) — extensions and serialization constraints.
 - [HL7 ServiceDeliveryLocationRoleType](https://terminology.hl7.org/4.0.0/ValueSet-v3-ServiceDeliveryLocationRoleType.html) — role-code binding.

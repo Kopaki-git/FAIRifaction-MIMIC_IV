@@ -690,7 +690,7 @@ The source unit string is retained verbatim in `Quantity.unit`, while `Quantity.
 
 QUDT is not used because it adds no independently justified value to the chosen FHIR representation.
 
-Whether UCUM normalization is a novel contribution over the MIMIC-FHIR baseline remains to be checked before it is claimed as such in the final report.
+UCUM normalization is new relative to MIMIC-FHIR for ICU charted observations, whose profile uses the source unit string as both unit and code (verified 31 October 2026; see `docs/semantic_mapping_provenance.md` §9.1).
 
 ---
 
@@ -984,7 +984,7 @@ The audited model adds or strengthens:
 5. **Canonical diagnosis terminology:** first-ranked billed diagnoses retain the source coding and add canonical ICD-9-CM/ICD-10-CM identity without rewriting historical codes.
 6. **Explicit diagnosis role and rank:** the selected diagnosis is represented as an encounter diagnosis with `use = billing` and `rank = 1`, avoiding the misleading phrase “primary clinical diagnosis.”
 
-UCUM normalization is part of the model, but its novelty over MIMIC-FHIR must be verified before the final report claims it as an additional FAIRification contribution.
+UCUM normalization is new relative to MIMIC-FHIR for ICU charted observations, whose profile uses the source unit string as both unit and code (verified 31 October 2026; see `docs/semantic_mapping_provenance.md` §9.1).
 
 ---
 

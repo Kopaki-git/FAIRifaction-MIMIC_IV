@@ -106,11 +106,12 @@ The canonical model is FHIR-aligned. **Strict FHIR-RDF serialization and FHIR in
 
 ## Current implementation status
 
-As of 28 October 2026:
+As of 1 November 2026:
 
 - Canonical source extraction and validation: **completed**.
 - Clinical-semantic model and terminology choices: **audited and frozen**.
 - Current semantic provenance documentation: **available**, with explicit evidence limitations.
+- Comparison with MIMIC-FHIR: **verified** against its implementation guide 1.3.0; findings in [`docs/semantic_mapping_provenance.md`](docs/semantic_mapping_provenance.md) §9.
 - Identifier and namespace decisions: **resolved**; the W3ID base `https://w3id.org/FAIR-course-UT/2026/group04/` is confirmed by the teacher.
 - Executable RDF transformation (Python/RDFLib) and Turtle export: **implemented**, `rdf/mimic_icu_vitals_4h.ttl`.
 - RDF acceptance checks: **implemented** in `tests/test_rdf.py`. They check syntax, source fidelity, relational integrity, mapping fidelity and reproducibility, not FHIR conformance.
@@ -158,6 +159,7 @@ The setup follows the course instructions with three changes needed to make them
 │   ├── fair_assessment.md
 │   ├── concept_uris.md                   # class, predicate and terminology URIs used
 │   └── figures/
+│       ├── semantic_metadata_model_overview.svg  # metadata model diagram
 │       └── semantic_model_overview.svg   # resource-level model diagram
 ├── fdp/                                  # local FAIR Data Point (Docker Compose)
 │   ├── docker-compose.yml
