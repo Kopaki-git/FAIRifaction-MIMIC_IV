@@ -165,6 +165,8 @@ The setup follows the course instructions with three changes needed to make them
 │   ├── docker-compose.yml
 │   ├── application.yml
 │   └── export/                           # records and schemas exported from the FDP
+│       ├── fdp.ttl                       # the FDP's own record
+│       ├── catalog.ttl
 │       ├── dataset.ttl
 │       ├── distribution_rdf.ttl
 │       ├── distribution_csv.ttl
